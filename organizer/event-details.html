@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details - QrFlow</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/css/qrflow.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="qrflow-navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <a href="dashboard.html" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i>
+                        <span class="d-none d-md-inline">Back</span>
+                    </a>
+                    <a href="dashboard.html" class="qrflow-logo">
+                        <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
+                        <span>QrFlow</span>
+                    </a>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="Auth.logout(); return false;">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Event Header -->
+        <div id="eventHeader" class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h3 class="mb-2" id="eventName">Loading...</h3>
+                        <div class="d-flex flex-wrap gap-3 text-muted">
+                            <span><i class="bi bi-calendar3"></i> <span id="eventDate"></span></span>
+                            <span><i class="bi bi-geo-alt"></i> <span id="eventVenue"></span></span>
+                        </div>
+                    </div>
+                    <span class="badge badge-primary" id="eventStatus">Upcoming</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-card-value" id="totalAttendees">0</div>
+                    <div class="stat-card-label">Total</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-card-value text-success" id="checkedIn">0</div>
+                    <div class="stat-card-label">Checked In</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-card-value text-warning" id="qrPending">0</div>
+                    <div class="stat-card-label">QR Pending</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-card-value text-danger" id="emailFailed">0</div>
+                    <div class="stat-card-label">Email Failed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Bar -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-primary" onclick="showUploadModal()">
+                        <i class="bi bi-upload"></i> Upload CSV
+                    </button>
+                    <button class="btn btn-secondary" id="generateQrBtn" onclick="generateQRCodes()">
+                        <i class="bi bi-qr-code"></i> Generate QR Codes
+                        <span class="badge bg-light text-dark ms-1" id="pendingCount">0</span>
+                    </button>
+                    <button class="btn btn-success" onclick="window.location.href='scanner.html?id=' + eventId">
+                        <i class="bi bi-qr-code-scan"></i> Scan QR
+                    </button>
+                    <button class="btn btn-info" onclick="window.location.href='checkin-dashboard.html?id=' + eventId">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="exportCSV()">
+                        <i class="bi bi-download"></i> Export
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters & Search -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search by name, email, or roll number...">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <select class="form-select" id="branchFilter">
+                            <option value="">All Branches</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <select class="form-select" id="yearFilter">
+                            <option value="">All Years</option>
+                            <option value="1">Year 1</option>
+                            <option value="2">Year 2</option>
+                            <option value="3">Year 3</option>
+                            <option value="4">Year 4</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <select class="form-select" id="sectionFilter">
+                            <option value="">All Sections</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="checked_in">Checked In</option>
+                            <option value="not_checked_in">Not Checked In</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendees Table -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="mb-3">Attendees</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Roll Number</th>
+                                <th class="d-none d-md-table-cell">Branch</th>
+                                <th class="d-none d-md-table-cell">Year</th>
+                                <th class="d-none d-lg-table-cell">Section</th>
+                                <th>QR</th>
+                                <th>Email</th>
+                                <th>Check-in</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendeesTable">
+                            <tr>
+                                <td colspan="9" class="text-center py-4">
+                                    <div class="spinner-border text-primary"></div>
+                                    <p class="mt-2 mb-0">Loading attendees...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload CSV Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-upload"></i> Upload Attendees</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Download CSV Template</label>
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="downloadTemplate()">
+                            <i class="bi bi-download"></i> Download Template
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Upload CSV File</label>
+                        <input type="file" class="form-control" id="csvFile" accept=".csv">
+                    </div>
+                    <div id="uploadProgress" style="display:none;">
+                        <div class="progress mb-2">
+                            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted" id="uploadStatus">Uploading...</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="uploadCSV()">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    
+    <script>
+        Auth.requireAuth();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+        let allAttendees = [];
+        let uploadModalInstance;
+
+        if (!eventId) {
+            window.location.href = 'dashboard.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            uploadModalInstance = new bootstrap.Modal(document.getElementById('uploadModal'));
+            await loadEventDetails();
+            await loadAttendees();
+            setupFilters();
+        });
+
+        async function loadEventDetails() {
+            try {
+                const event = await api.get(`/api/events/${eventId}`);
+                document.getElementById('eventName').textContent = event.name;
+                document.getElementById('eventDate').textContent = Utils.formatDate(event.date);
+                document.getElementById('eventVenue').textContent = event.venue || 'TBA';
+                
+                const status = Utils.getEventStatus(event.date);
+                document.getElementById('eventStatus').className = `badge badge-${status.class}`;
+                document.getElementById('eventStatus').textContent = status.label;
+            } catch (error) {
+                Utils.showToast('Failed to load event details', 'error');
+            }
+        }
+
+        async function loadAttendees() {
+            try {
+                allAttendees = await api.get(`/api/events/${eventId}/attendees`);
+                updateStats();
+                renderAttendees(allAttendees);
+                populateFilterOptions();
+            } catch (error) {
+                Utils.showToast('Failed to load attendees', 'error');
+                document.getElementById('attendeesTable').innerHTML = '<tr><td colspan="9" class="text-center">Failed to load attendees</td></tr>';
+            }
+        }
+
+        function updateStats() {
+            const total = allAttendees.length;
+            const checkedIn = allAttendees.filter(a => a.checked_in).length;
+            const qrPending = allAttendees.filter(a => !a.qr_generated).length;
+            const emailFailed = allAttendees.filter(a => a.email_error).length;
+
+            document.getElementById('totalAttendees').textContent = total;
+            document.getElementById('checkedIn').textContent = checkedIn;
+            document.getElementById('qrPending').textContent = qrPending;
+            document.getElementById('emailFailed').textContent = emailFailed;
+            document.getElementById('pendingCount').textContent = qrPending + emailFailed;
+        }
+
+        function renderAttendees(attendees) {
+            const tbody = document.getElementById('attendeesTable');
+            
+            if (attendees.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4">No attendees found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = attendees.map(a => `
+                <tr>
+                    <td>${a.name}</td>
+                    <td>${a.roll_number}</td>
+                    <td class="d-none d-md-table-cell">${a.branch}</td>
+                    <td class="d-none d-md-table-cell">${a.year}</td>
+                    <td class="d-none d-lg-table-cell">${a.section}</td>
+                    <td>${a.qr_generated ? '<i class="bi bi-check-circle-fill text-success"></i>' : '<i class="bi bi-x-circle-fill text-danger"></i>'}</td>
+                    <td>
+                        ${a.email_sent ? '<i class="bi bi-check-circle-fill text-success"></i>' : 
+                          a.email_error ? '<i class="bi bi-exclamation-triangle-fill text-danger"></i>' : 
+                          '<i class="bi bi-clock text-warning"></i>'}
+                    </td>
+                    <td>${a.checked_in ? '<span class="badge badge-success">✓</span>' : '<span class="badge badge-secondary">-</span>'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="resendQR(${a.id})" ${a.qr_generated && a.email_sent ? 'disabled' : ''}>
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function populateFilterOptions() {
+            const branches = [...new Set(allAttendees.map(a => a.branch))];
+            const sections = [...new Set(allAttendees.map(a => a.section))];
+            
+            document.getElementById('branchFilter').innerHTML = '<option value="">All Branches</option>' + 
+                branches.map(b => `<option value="${b}">${b}</option>`).join('');
+            
+            document.getElementById('sectionFilter').innerHTML = '<option value="">All Sections</option>' + 
+                sections.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        function setupFilters() {
+            ['searchInput', 'branchFilter', 'yearFilter', 'sectionFilter', 'statusFilter'].forEach(id => {
+                document.getElementById(id).addEventListener('input', filterAttendees);
+            });
+        }
+
+        function filterAttendees() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const branch = document.getElementById('branchFilter').value;
+            const year = document.getElementById('yearFilter').value;
+            const section = document.getElementById('sectionFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const filtered = allAttendees.filter(a => {
+                const matchSearch = !search || a.name.toLowerCase().includes(search) || 
+                                   a.email.toLowerCase().includes(search) || 
+                                   a.roll_number.toLowerCase().includes(search);
+                const matchBranch = !branch || a.branch === branch;
+                const matchYear = !year || a.year == year;
+                const matchSection = !section || a.section === section;
+                const matchStatus = !status || 
+                                   (status === 'checked_in' && a.checked_in) || 
+                                   (status === 'not_checked_in' && !a.checked_in);
+                
+                return matchSearch && matchBranch && matchYear && matchSection && matchStatus;
+            });
+
+            renderAttendees(filtered);
+        }
+
+        function showUploadModal() {
+            uploadModalInstance.show();
+        }
+
+        async function downloadTemplate() {
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/events/${eventId}/attendees/template`, {
+                    headers: { 'Authorization': `Bearer ${api.getToken()}` }
+                });
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'attendee_template.csv';
+                a.click();
+                Utils.showToast('Template downloaded', 'success');
+            } catch (error) {
+                Utils.showToast('Failed to download template', 'error');
+            }
+        }
+
+        async function uploadCSV() {
+            const fileInput = document.getElementById('csvFile');
+            if (!fileInput.files[0]) {
+                Utils.showToast('Please select a CSV file', 'warning');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            document.getElementById('uploadProgress').style.display = 'block';
+
+            try {
+                const result = await api.uploadFile(`/api/events/${eventId}/attendees/upload`, formData);
+                Utils.showToast(`Uploaded: ${result.added} added, ${result.skipped} skipped`, 'success');
+                uploadModalInstance.hide();
+                await loadAttendees();
+            } catch (error) {
+                Utils.showToast(error.message || 'Upload failed', 'error');
+            } finally {
+                document.getElementById('uploadProgress').style.display = 'none';
+                fileInput.value = '';
+            }
+        }
+
+        async function generateQRCodes() {
+            const btn = document.getElementById('generateQrBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating...';
+
+            try {
+                const result = await api.post(`/api/events/${eventId}/generate-qr`);
+                Utils.showToast(`QR Codes: ${result.success} sent, ${result.failed} failed`, result.failed > 0 ? 'warning' : 'success');
+                await loadAttendees();
+            } catch (error) {
+                Utils.showToast('Failed to generate QR codes', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-qr-code"></i> Generate QR Codes <span class="badge bg-light text-dark ms-1" id="pendingCount">0</span>';
+            }
+        }
+
+        async function resendQR(attendeeId) {
+            try {
+                await api.post(`/api/attendees/${attendeeId}/resend-qr`);
+                Utils.showToast('QR code resent successfully', 'success');
+                await loadAttendees();
+            } catch (error) {
+                Utils.showToast('Failed to resend QR code', 'error');
+            }
+        }
+
+        async function exportCSV() {
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/events/${eventId}/export`, {
+                    headers: { 'Authorization': `Bearer ${api.getToken()}` }
+                });
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `event_${eventId}_attendees.csv`;
+                a.click();
+                Utils.showToast('CSV exported successfully', 'success');
+            } catch (error) {
+                Utils.showToast('Failed to export CSV', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

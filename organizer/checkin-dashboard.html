@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in Dashboard - QrFlow</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/css/qrflow.css" rel="stylesheet">
+    
+    <style>
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .stat-card {
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+        
+        .attendee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .attendee-item:hover {
+            background-color: var(--bg-light);
+        }
+        
+        .attendee-item:last-child {
+            border-bottom: none;
+        }
+        
+        .attendee-status-icon {
+            font-size: 1.25rem;
+        }
+        
+        .progress-ring {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .progress-ring-circle {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        .filter-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .filter-pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-pill:hover {
+            border-color: var(--primary);
+        }
+        
+        @media (max-width: 767px) {
+            .stat-card-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="qrflow-navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <a href="event-details.html" class="btn btn-sm btn-outline-primary" id="backBtn">
+                        <i class="bi bi-arrow-left"></i>
+                        <span class="d-none d-md-inline">Back</span>
+                    </a>
+                    <a href="dashboard.html" class="qrflow-logo">
+                        <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
+                        <span>QrFlow</span>
+                    </a>
+                </div>
+                <div class="live-indicator">
+                    <div class="live-dot"></div>
+                    <span>Live</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Event Header -->
+        <div class="mb-4">
+            <h3 class="mb-2" id="eventName">Loading...</h3>
+            <p class="text-muted mb-0">
+                <i class="bi bi-calendar3"></i> <span id="eventDate"></span>
+                <span class="ms-3"><i class="bi bi-geo-alt"></i> <span id="eventVenue"></span></span>
+            </p>
+            <small class="text-muted">Auto-refreshes every 5 seconds</small>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value" id="totalStat">0</div>
+                        <div class="stat-card-label">Total Registered</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value text-success" id="checkedInStat">0</div>
+                        <div class="stat-card-label">Checked In</div>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-success" id="checkedInProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value text-warning" id="pendingStat">0</div>
+                        <div class="stat-card-label">Not Checked In</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value text-primary" id="percentageStat">0%</div>
+                        <div class="stat-card-label">Attendance Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="mb-3">Filter Attendees</h6>
+                <div class="filter-pills">
+                    <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">
+                        All <span class="badge bg-secondary ms-1" id="filterAllCount">0</span>
+                    </button>
+                    <button class="filter-pill" data-filter="checked_in" onclick="setFilter('checked_in')">
+                        Checked In <span class="badge bg-success ms-1" id="filterCheckedCount">0</span>
+                    </button>
+                    <button class="filter-pill" data-filter="pending" onclick="setFilter('pending')">
+                        Pending <span class="badge bg-warning ms-1" id="filterPendingCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segregated Attendees (Branch → Year → Section) -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="mb-3">
+                    <i class="bi bi-diagram-3"></i>
+                    Attendees by Branch, Year & Section
+                </h5>
+                
+                <div id="loadingState" class="text-center py-4">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-2 mb-0">Loading dashboard...</p>
+                </div>
+
+                <div id="segregatedView" class="accordion" style="display: none;">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    
+    <script>
+        Auth.requireAuth();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+        
+        if (!eventId) {
+            window.location.href = 'dashboard.html';
+        }
+        
+        let dashboardData = null;
+        let currentFilter = 'all';
+        let refreshInterval = null;
+        
+        // Update back button URL
+        document.getElementById('backBtn').href = `event-details.html?id=${eventId}`;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadDashboard();
+            
+            // Start auto-refresh every 5 seconds
+            refreshInterval = setInterval(async () => {
+                await loadDashboard(true);
+            }, 5000);
+        });
+        
+        // Clear interval on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+        
+        async function loadDashboard(silent = false) {
+            try {
+                dashboardData = await api.get(`/api/events/${eventId}/dashboard`);
+                
+                if (!silent) {
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('segregatedView').style.display = 'block';
+                }
+                
+                updateEventInfo();
+                updateStats();
+                renderSegregatedView();
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                if (!silent) {
+                    Utils.showToast('Failed to load dashboard', 'error');
+                }
+            }
+        }
+        
+        function updateEventInfo() {
+            document.getElementById('eventName').textContent = dashboardData.event.name;
+            document.getElementById('eventDate').textContent = Utils.formatDate(dashboardData.event.date);
+            document.getElementById('eventVenue').textContent = dashboardData.event.venue || 'TBA';
+        }
+        
+        function updateStats() {
+            const stats = dashboardData.stats;
+            const percentage = Utils.calculatePercentage(stats.checked_in, stats.total_attendees);
+            
+            document.getElementById('totalStat').textContent = stats.total_attendees;
+            document.getElementById('checkedInStat').textContent = stats.checked_in;
+            document.getElementById('pendingStat').textContent = stats.not_checked_in;
+            document.getElementById('percentageStat').textContent = percentage + '%';
+            document.getElementById('checkedInProgress').style.width = percentage + '%';
+            
+            // Update filter counts
+            document.getElementById('filterAllCount').textContent = stats.total_attendees;
+            document.getElementById('filterCheckedCount').textContent = stats.checked_in;
+            document.getElementById('filterPendingCount').textContent = stats.not_checked_in;
+        }
+        
+        function renderSegregatedView() {
+            const container = document.getElementById('segregatedView');
+            container.innerHTML = '';
+            
+            const groups = dashboardData.groups;
+            const branches = Object.keys(groups).sort();
+            
+            if (branches.length === 0) {
+                container.innerHTML = '<p class="text-center text-muted py-4">No attendees found</p>';
+                return;
+            }
+            
+            branches.forEach((branch, branchIndex) => {
+                const branchData = groups[branch];
+                const branchId = `branch-${branchIndex}`;
+                
+                const branchHtml = `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${branchId}">
+                                <strong>${branch}</strong>
+                                <span class="ms-2 badge badge-primary">${branchData.total}</span>
+                                <span class="ms-2 text-success">
+                                    <i class="bi bi-check-circle-fill"></i> ${branchData.checked_in}
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="${branchId}" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                ${renderYears(branchData.years, branchId)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML += branchHtml;
+            });
+        }
+        
+        function renderYears(years, parentId) {
+            const yearKeys = Object.keys(years).sort();
+            
+            return yearKeys.map((year, yearIndex) => {
+                const yearData = years[year];
+                const yearId = `${parentId}-year-${yearIndex}`;
+                
+                return `
+                    <div class="accordion accordion-flush mb-2">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${yearId}">
+                                    Year ${year}
+                                    <span class="ms-2 badge badge-secondary">${yearData.total}</span>
+                                    <span class="ms-2 text-success">
+                                        <i class="bi bi-check-circle-fill"></i> ${yearData.checked_in}
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="${yearId}" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    ${renderSections(yearData.sections)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderSections(sections) {
+            const sectionKeys = Object.keys(sections).sort();
+            
+            return sectionKeys.map(section => {
+                const sectionData = sections[section];
+                
+                return `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>Section ${section}</strong>
+                            <div>
+                                <span class="badge badge-secondary">${sectionData.total}</span>
+                                <span class="badge badge-success ms-1">${sectionData.checked_in} checked in</span>
+                            </div>
+                        </div>
+                        ${renderAttendees(sectionData.attendees)}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderAttendees(attendees) {
+            const filtered = filterAttendees(attendees);
+            
+            if (filtered.length === 0) {
+                return '<p class="text-muted text-center py-2 mb-0">No attendees match the filter</p>';
+            }
+            
+            return `
+                <div class="border rounded">
+                    ${filtered.map(attendee => `
+                        <div class="attendee-item">
+                            <div>
+                                <div class="fw-bold">${attendee.name}</div>
+                                <small class="text-muted">${attendee.roll_number}</small>
+                                ${attendee.checked_in ? `
+                                    <div class="mt-1">
+                                        <small class="text-success">
+                                            <i class="bi bi-clock"></i> ${Utils.formatTime(attendee.checkin_time)}
+                                            ${attendee.checker_name ? ` by ${attendee.checker_name}` : ''}
+                                        </small>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="attendee-status-icon">
+                                ${attendee.checked_in 
+                                    ? '<i class="bi bi-check-circle-fill text-success"></i>' 
+                                    : '<i class="bi bi-circle text-muted"></i>'}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function filterAttendees(attendees) {
+            if (currentFilter === 'all') return attendees;
+            if (currentFilter === 'checked_in') return attendees.filter(a => a.checked_in);
+            if (currentFilter === 'pending') return attendees.filter(a => !a.checked_in);
+            return attendees;
+        }
+        
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            // Update active state
+            document.querySelectorAll('.filter-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            
+            // Re-render
+            renderSegregatedView();
+        }
+    </script>
+</body>
+</html>

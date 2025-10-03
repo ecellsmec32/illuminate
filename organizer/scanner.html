@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner - QrFlow</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/css/qrflow.css" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        #videoContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+        
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        canvas {
+            display: none;
+        }
+        
+        .scanner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .scanner-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: auto;
+        }
+        
+        .scan-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border: 3px solid var(--primary);
+            border-radius: 20px;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { border-color: var(--primary); }
+            50% { border-color: var(--secondary); }
+        }
+        
+        .counter-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.95);
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 700;
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .result-overlay.show {
+            opacity: 1;
+        }
+        
+        .result-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .result-success {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .result-error {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .recent-scans {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 30vh;
+            overflow-y: auto;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 1rem;
+            pointer-events: auto;
+        }
+        
+        .recent-scan-item {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Container -->
+    <div id="videoContainer">
+        <video id="video" playsinline autoplay></video>
+        <canvas id="canvas"></canvas>
+    </div>
+    
+    <!-- Scanner Overlay -->
+    <div class="scanner-overlay">
+        <div class="scanner-header">
+            <button class="btn btn-light" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            <div class="text-white fw-bold" id="eventTitle">Loading...</div>
+            <button class="btn btn-info" onclick="showManualEntry()">
+                <i class="bi bi-pencil"></i>
+            </button>
+        </div>
+        
+        <div class="counter-badge">
+            <i class="bi bi-people-fill"></i>
+            <span id="checkedInCount">0</span> / <span id="totalCount">0</span>
+        </div>
+        
+        <div class="scan-frame"></div>
+        
+        <div class="recent-scans" id="recentScans">
+            <div class="text-white text-center mb-2">
+                <small>Recent Scans</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Result Overlay -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-content" id="resultContent">
+            <div class="result-icon" id="resultIcon"></div>
+            <h3 id="resultName"></h3>
+            <p class="mb-0" id="resultMessage"></p>
+        </div>
+    </div>
+
+    <!-- Manual Entry Modal -->
+    <div class="modal fade" id="manualEntryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Manual Check-in</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Roll Number</label>
+                        <input type="text" class="form-control" id="rollNumberInput" placeholder="e.g., 21BCE001" autofocus>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="processManualEntry()">Check In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    
+    <script>
+        Auth.requireAuth();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+        
+        if (!eventId) {
+            window.location.href = 'dashboard.html';
+        }
+        
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let isScanning = true;
+        let recentScans = [];
+        let stats = { checked_in: 0, total: 0 };
+        let lastScannedCode = null;
+        let scanCooldown = false;
+        let manualEntryModal;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            manualEntryModal = new bootstrap.Modal(document.getElementById('manualEntryModal'));
+            await loadEventInfo();
+            await updateStats();
+            startCamera();
+        });
+        
+        async function loadEventInfo() {
+            try {
+                const event = await api.get(`/api/events/${eventId}`);
+                document.getElementById('eventTitle').textContent = event.name;
+            } catch (error) {
+                console.error('Failed to load event:', error);
+            }
+        }
+        
+        async function updateStats() {
+            try {
+                const dashboard = await api.get(`/api/events/${eventId}/dashboard`);
+                stats.checked_in = dashboard.stats.checked_in;
+                stats.total = dashboard.stats.total_attendees;
+                
+                document.getElementById('checkedInCount').textContent = stats.checked_in;
+                document.getElementById('totalCount').textContent = stats.total;
+            } catch (error) {
+                console.error('Failed to update stats:', error);
+            }
+        }
+        
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+                video.srcObject = stream;
+                video.setAttribute('playsinline', true);
+                video.play();
+                requestAnimationFrame(scanFrame);
+            } catch (err) {
+                console.error('Camera error:', err);
+                alert('Failed to access camera. Please check permissions.');
+            }
+        }
+        
+        function scanFrame() {
+            if (!isScanning) {
+                requestAnimationFrame(scanFrame);
+                return;
+            }
+            
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvas.height = video.videoHeight;
+                canvas.width = video.videoWidth;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                
+                if (code && !scanCooldown) {
+                    processQRCode(code.data);
+                }
+            }
+            
+            requestAnimationFrame(scanFrame);
+        }
+        
+        async function processQRCode(qrData) {
+            if (qrData === lastScannedCode) return;
+            
+            console.log('QR Code detected:', qrData.substring(0, 50) + '...');
+            
+            scanCooldown = true;
+            lastScannedCode = qrData;
+            
+            try {
+                const result = await api.post('/api/checkin/scan', {
+                    qr_token: qrData
+                });
+                
+                if (result.success) {
+                    showResult('success', result.attendee.name, result.message);
+                    stats.checked_in++;
+                    document.getElementById('checkedInCount').textContent = stats.checked_in;
+                    addRecentScan(result.attendee.name, result.attendee.roll_number, true);
+                    playSuccessSound();
+                } else {
+                    showResult('error', 'Error', result.message);
+                    addRecentScan('Unknown', 'Error', false);
+                    playErrorSound();
+                }
+            } catch (error) {
+                console.error('Check-in error:', error);
+                showResult('error', 'Scan Failed', error.message || 'Invalid QR code');
+                addRecentScan('Unknown', 'Error', false);
+                playErrorSound();
+            }
+            
+            setTimeout(() => {
+                scanCooldown = false;
+                lastScannedCode = null;
+            }, 3000);
+        }
+        
+        function showResult(type, name, message) {
+            const overlay = document.getElementById('resultOverlay');
+            const content = document.getElementById('resultContent');
+            const icon = document.getElementById('resultIcon');
+            const nameEl = document.getElementById('resultName');
+            const messageEl = document.getElementById('resultMessage');
+            
+            nameEl.textContent = name;
+            messageEl.textContent = message;
+            
+            if (type === 'success') {
+                content.className = 'result-content result-success';
+                icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+            } else {
+                content.className = 'result-content result-error';
+                icon.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
+            }
+            
+            overlay.classList.add('show');
+            setTimeout(() => overlay.classList.remove('show'), 2000);
+        }
+        
+        function addRecentScan(name, rollNumber, success) {
+            const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            recentScans.unshift({ name, rollNumber, time, success });
+            if (recentScans.length > 5) recentScans.pop();
+            renderRecentScans();
+        }
+        
+        function renderRecentScans() {
+            const container = document.getElementById('recentScans');
+            let html = '<div class="text-white text-center mb-2"><small>Recent Scans</small></div>';
+            
+            recentScans.forEach(scan => {
+                html += `
+                    <div class="recent-scan-item">
+                        <div>
+                            <div class="fw-bold">${scan.name}</div>
+                            <small>${scan.rollNumber}</small>
+                        </div>
+                        <div class="text-end">
+                            <div>${scan.time}</div>
+                            ${scan.success ? '<i class="bi bi-check-circle-fill text-success"></i>' : '<i class="bi bi-x-circle-fill text-danger"></i>'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function playSuccessSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 100);
+            } catch (e) {}
+        }
+        
+        function playErrorSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = 400;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 200);
+            } catch (e) {}
+        }
+        
+        function showManualEntry() {
+            manualEntryModal.show();
+        }
+        
+        async function processManualEntry() {
+            const rollNumber = document.getElementById('rollNumberInput').value.trim();
+            
+            if (!rollNumber) {
+                alert('Please enter a roll number');
+                return;
+            }
+            
+            try {
+                const attendees = await api.get(`/api/events/${eventId}/attendees`);
+                const attendee = attendees.find(a => a.roll_number.toLowerCase() === rollNumber.toLowerCase());
+                
+                if (!attendee) {
+                    alert('Attendee not found');
+                    return;
+                }
+                
+                if (attendee.checked_in) {
+                    alert('Already checked in!');
+                    return;
+                }
+                
+                await api.post(`/api/attendees/${attendee.id}/checkin-manual`);
+                showResult('success', attendee.name, 'Manually checked in');
+                stats.checked_in++;
+                document.getElementById('checkedInCount').textContent = stats.checked_in;
+                addRecentScan(attendee.name, attendee.roll_number, true);
+                playSuccessSound();
+                manualEntryModal.hide();
+                document.getElementById('rollNumberInput').value = '';
+            } catch (error) {
+                alert('Check-in failed: ' + error.message);
+            }
+        }
+        
+        function goBack() {
+            const stream = video.srcObject;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            window.location.href = `event-details.html?id=${eventId}`;
+        }
+        
+        window.addEventListener('beforeunload', () => {
+            const stream = video.srcObject;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - QrFlow</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/css/qrflow.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="qrflow-navbar">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="dashboard.html" class="qrflow-logo">
+                    <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
+                    <span>QrFlow</span>
+                    <span class="badge badge-danger ms-2">Admin</span>
+                </a>
+                
+                <div class="d-flex gap-3">
+                    <a href="dashboard.html" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="clubs.html" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-building"></i> Clubs
+                    </a>
+                    <a href="users.html" class="btn btn-sm btn-primary">
+                        <i class="bi bi-people"></i> Users
+                    </a>
+                    <a href="logs.html" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-clock-history"></i> Logs
+                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="Auth.logout(); return false;">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="bi bi-people"></i>
+                User Management
+            </h2>
+            <button class="btn btn-primary" onclick="showCreateModal()">
+                <i class="bi bi-person-plus"></i>
+                Create User
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search by name or email...">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="clubFilter">
+                            <option value="">All Clubs</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="roleFilter">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="organizer">Organizer</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="disabled">Disabled</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th class="d-none d-md-table-cell">Full Name</th>
+                                <th class="d-none d-lg-table-cell">Email</th>
+                                <th>Club</th>
+                                <th>Role</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="spinner-border text-primary"></div>
+                                    <p class="mt-2 mb-0">Loading users...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Create User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body">
+                        <input type="hidden" id="userId">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username *</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3" id="passwordField">
+                            <label for="password" class="form-label">Password *</label>
+                            <input type="password" class="form-control" id="password" required>
+                            <small class="text-muted">Leave blank to keep current password (when editing)</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role *</label>
+                            <select class="form-select" id="role" required>
+                                <option value="">Select Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="organizer">Organizer</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="clubSelectField">
+                            <label for="clubSelect" class="form-label">Assign to Club</label>
+                            <select class="form-select" id="clubSelect">
+                                <option value="">No Club</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveBtn">
+                            <i class="bi bi-check-circle"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this user?</p>
+                    <p class="text-danger mb-0">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        This action cannot be undone!
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    
+    <script>
+        Auth.requireAuth();
+        const currentUser = Auth.getCurrentUser();
+        
+        if (currentUser.role !== 'admin') {
+            Utils.showToast('Access denied - Admin only', 'error');
+            setTimeout(() => window.location.href = '../organizer/dashboard.html', 2000);
+        }
+
+        let users = [];
+        let clubs = [];
+        let userModalInstance, deleteModalInstance;
+        let userToDelete = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            userModalInstance = new bootstrap.Modal(document.getElementById('userModal'));
+            deleteModalInstance = new bootstrap.Modal(document.getElementById('deleteModal'));
+            
+            await loadClubs();
+            await loadUsers();
+            setupFilters();
+        });
+
+        async function loadClubs() {
+            try {
+                clubs = await api.get('/api/admin/clubs');
+                
+                // Populate club filters
+                const clubFilter = document.getElementById('clubFilter');
+                const clubSelect = document.getElementById('clubSelect');
+                
+                clubs.forEach(club => {
+                    clubFilter.innerHTML += `<option value="${club.id}">${club.name}</option>`;
+                    clubSelect.innerHTML += `<option value="${club.id}">${club.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Failed to load clubs:', error);
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                users = await api.get('/api/admin/users');
+                renderUsers(users);
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                Utils.showToast('Failed to load users', 'error');
+                document.getElementById('usersTable').innerHTML = 
+                    '<tr><td colspan="7" class="text-center text-danger">Failed to load users</td></tr>';
+            }
+        }
+
+        function renderUsers(usersToRender) {
+            const tbody = document.getElementById('usersTable');
+
+            if (usersToRender.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No users found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = usersToRender.map(user => {
+                const club = clubs.find(c => c.id === user.club_id);
+                const isCurrentUser = user.id === currentUser.id;
+                
+                return `
+                    <tr>
+                        <td>
+                            <strong>${user.username}</strong>
+                            ${isCurrentUser ? '<span class="badge badge-info ms-1">You</span>' : ''}
+                        </td>
+                        <td class="d-none d-md-table-cell">${user.full_name || '-'}</td>
+                        <td class="d-none d-lg-table-cell">${user.email}</td>
+                        <td>${club ? club.name : '-'}</td>
+                        <td>
+                            <span class="badge badge-${user.role === 'admin' ? 'danger' : 'primary'}">
+                                ${user.role}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            ${user.disabled 
+                                ? '<span class="badge badge-secondary">Disabled</span>' 
+                                : '<span class="badge badge-success">Active</span>'}
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editUser(${user.id})" ${isCurrentUser ? 'disabled' : ''}>
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${user.id})" ${isCurrentUser ? 'disabled' : ''}>
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function setupFilters() {
+            ['searchInput', 'clubFilter', 'roleFilter', 'statusFilter'].forEach(id => {
+                document.getElementById(id).addEventListener('input', filterUsers);
+            });
+        }
+
+        function filterUsers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const clubId = document.getElementById('clubFilter').value;
+            const role = document.getElementById('roleFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const filtered = users.filter(user => {
+                const matchSearch = !search || 
+                    user.username.toLowerCase().includes(search) ||
+                    user.email.toLowerCase().includes(search) ||
+                    (user.full_name && user.full_name.toLowerCase().includes(search));
+                
+                const matchClub = !clubId || user.club_id == clubId;
+                const matchRole = !role || user.role === role;
+                const matchStatus = !status || 
+                    (status === 'active' && !user.disabled) ||
+                    (status === 'disabled' && user.disabled);
+
+                return matchSearch && matchClub && matchRole && matchStatus;
+            });
+
+            renderUsers(filtered);
+        }
+
+        function showCreateModal() {
+            document.getElementById('modalTitle').textContent = 'Create User';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('password').required = true;
+            userModalInstance.show();
+        }
+
+        async function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit User';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('username').value = user.username;
+            document.getElementById('email').value = user.email;
+            document.getElementById('password').value = '';
+            document.getElementById('password').required = false;
+            document.getElementById('fullName').value = user.full_name || '';
+            document.getElementById('role').value = user.role;
+            document.getElementById('clubSelect').value = user.club_id || '';
+            
+            userModalInstance.show();
+        }
+
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+
+            const userId = document.getElementById('userId').value;
+            const userData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                full_name: document.getElementById('fullName').value,
+                role: document.getElementById('role').value,
+                club_id: document.getElementById('clubSelect').value ? parseInt(document.getElementById('clubSelect').value) : null
+            };
+
+            const password = document.getElementById('password').value;
+            if (password) {
+                userData.password = password;
+            }
+
+            try {
+                if (userId) {
+                    await api.put(`/api/admin/users/${userId}`, userData);
+                    Utils.showToast('User updated successfully', 'success');
+                } else {
+                    await api.post('/api/admin/users', userData);
+                    Utils.showToast('User created successfully', 'success');
+                }
+
+                userModalInstance.hide();
+                await loadUsers();
+            } catch (error) {
+                Utils.showToast(error.message || 'Operation failed', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="bi bi-check-circle"></i> Save';
+            }
+        });
+
+        function confirmDelete(userId) {
+            userToDelete = userId;
+            deleteModalInstance.show();
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            if (!userToDelete) return;
+
+            const btn = document.getElementById('confirmDeleteBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Deleting...';
+
+            try {
+                await api.delete(`/api/admin/users/${userToDelete}`);
+                Utils.showToast('User deleted successfully', 'success');
+                deleteModalInstance.hide();
+                await loadUsers();
+            } catch (error) {
+                Utils.showToast(error.message || 'Delete failed', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-trash"></i> Delete';
+                userToDelete = null;
+            }
+        });
+    </script>
+</body>
+</html>

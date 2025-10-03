@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Logs - QrFlow</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/css/qrflow.css" rel="stylesheet">
+    
+    <style>
+        .log-item {
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .log-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+        
+        .log-action {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .log-timestamp {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.create { border-left-color: var(--secondary); }
+        .log-item.update { border-left-color: var(--accent); }
+        .log-item.delete { border-left-color: var(--danger); }
+        .log-item.login { border-left-color: var(--primary); }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="qrflow-navbar">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="dashboard.html" class="qrflow-logo">
+                    <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
+                    <span>QrFlow</span>
+                    <span class="badge badge-danger ms-2">Admin</span>
+                </a>
+                
+                <div class="d-flex gap-3">
+                    <a href="dashboard.html" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="clubs.html" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-building"></i> Clubs
+                    </a>
+                    <a href="users.html" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-people"></i> Users
+                    </a>
+                    <a href="logs.html" class="btn btn-sm btn-primary">
+                        <i class="bi bi-clock-history"></i> Logs
+                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="Auth.logout(); return false;">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="bi bi-clock-history"></i>
+                Activity Logs
+            </h2>
+            <button class="btn btn-outline-primary" onclick="loadLogs()">
+                <i class="bi bi-arrow-clockwise"></i>
+                Refresh
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <select class="form-select" id="actionFilter">
+                            <option value="">All Actions</option>
+                            <option value="login">Login</option>
+                            <option value="create">Create</option>
+                            <option value="update">Update</option>
+                            <option value="delete">Delete</option>
+                            <option value="upload">Upload</option>
+                            <option value="checkin">Check-in</option>
+                            <option value="export">Export</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="entityFilter">
+                            <option value="">All Entities</option>
+                            <option value="club">Club</option>
+                            <option value="user">User</option>
+                            <option value="event">Event</option>
+                            <option value="attendee">Attendee</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="userFilter">
+                            <option value="">All Users</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="limitFilter" onchange="loadLogs()">
+                            <option value="50">Last 50</option>
+                            <option value="100">Last 100</option>
+                            <option value="200">Last 200</option>
+                            <option value="500">Last 500</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row mb-4">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value text-primary" id="totalLogs">0</div>
+                        <div class="stat-card-label">Total Logs</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value text-success" id="todayLogs">0</div>
+                        <div class="stat-card-label">Today's Activity</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value text-info" id="uniqueUsers">0</div>
+                        <div class="stat-card-label">Active Users</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-card-value text-warning" id="recentActions">0</div>
+                        <div class="stat-card-label">Last Hour</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs List -->
+        <div class="card">
+            <div class="card-body">
+                <div id="loadingState" class="text-center py-4">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-2 mb-0">Loading activity logs...</p>
+                </div>
+
+                <div id="logsContainer" style="display: none;">
+                    <!-- Logs will be inserted here -->
+                </div>
+
+                <div id="emptyState" class="text-center py-5" style="display: none;">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h4 class="mt-3 mb-2">No Activity Logs</h4>
+                    <p class="text-muted">No logs match the selected filters</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    
+    <script>
+        Auth.requireAuth();
+        const user = Auth.getCurrentUser();
+        
+        if (user.role !== 'admin') {
+            Utils.showToast('Access denied - Admin only', 'error');
+            setTimeout(() => window.location.href = '../organizer/dashboard.html', 2000);
+        }
+
+        let allLogs = [];
+        let users = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUsers();
+            await loadLogs();
+            setupFilters();
+        });
+
+        async function loadUsers() {
+            try {
+                users = await api.get('/api/admin/users');
+                
+                const userFilter = document.getElementById('userFilter');
+                users.forEach(user => {
+                    userFilter.innerHTML += `<option value="${user.id}">${user.username}</option>`;
+                });
+            } catch (error) {
+                console.error('Failed to load users:', error);
+            }
+        }
+
+        async function loadLogs() {
+            const limit = document.getElementById('limitFilter').value;
+            
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('logsContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+
+            try {
+                allLogs = await api.get(`/api/admin/logs?skip=0&limit=${limit}`);
+                updateStats();
+                filterAndRenderLogs();
+            } catch (error) {
+                console.error('Failed to load logs:', error);
+                Utils.showToast('Failed to load logs', 'error');
+                document.getElementById('loadingState').innerHTML = 
+                    '<p class="text-center text-danger">Failed to load logs</p>';
+            }
+        }
+
+        function updateStats() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const oneHourAgo = new Date(now - 60 * 60 * 1000);
+
+            const todayLogs = allLogs.filter(log => new Date(log.timestamp) >= today);
+            const recentLogs = allLogs.filter(log => new Date(log.timestamp) >= oneHourAgo);
+            const uniqueUsers = new Set(allLogs.map(log => log.user_id)).size;
+
+            document.getElementById('totalLogs').textContent = allLogs.length;
+            document.getElementById('todayLogs').textContent = todayLogs.length;
+            document.getElementById('uniqueUsers').textContent = uniqueUsers;
+            document.getElementById('recentActions').textContent = recentLogs.length;
+        }
+
+        function setupFilters() {
+            ['actionFilter', 'entityFilter', 'userFilter'].forEach(id => {
+                document.getElementById(id).addEventListener('change', filterAndRenderLogs);
+            });
+        }
+
+        function filterAndRenderLogs() {
+            const actionFilter = document.getElementById('actionFilter').value;
+            const entityFilter = document.getElementById('entityFilter').value;
+            const userFilter = document.getElementById('userFilter').value;
+
+            let filtered = allLogs;
+
+            if (actionFilter) {
+                filtered = filtered.filter(log => log.action === actionFilter);
+            }
+
+            if (entityFilter) {
+                filtered = filtered.filter(log => log.entity_type === entityFilter);
+            }
+
+            if (userFilter) {
+                filtered = filtered.filter(log => log.user_id == userFilter);
+            }
+
+            renderLogs(filtered);
+        }
+
+        function renderLogs(logs) {
+            document.getElementById('loadingState').style.display = 'none';
+            
+            const container = document.getElementById('logsContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (logs.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'block';
+            emptyState.style.display = 'none';
+
+            container.innerHTML = logs.map(log => {
+                const icon = getActionIcon(log.action);
+                const actionClass = log.action;
+                
+                // Get user name properly
+                let userName = 'System';
+                if (log.user_name) {
+                    userName = log.user_name;
+                } else if (log.user_id) {
+                    const logUser = users.find(u => u.id === log.user_id);
+                    userName = logUser ? logUser.username : 'User #' + log.user_id;
+                }
+                
+                return `
+                    <div class="log-item ${actionClass}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="bi ${icon}"></i>
+                                    <span class="log-action">${userName}</span>
+                                    <span class="badge badge-${getActionBadgeClass(log.action)}">${log.action}</span>
+                                    ${log.entity_type ? `<span class="badge badge-secondary">${log.entity_type}</span>` : ''}
+                                </div>
+                                <div class="text-muted">${log.description}</div>
+                                ${log.details && Object.keys(log.details).length > 0 ? `
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="bi bi-info-circle"></i>
+                                        ${formatLogDetails(log.details)}
+                                    </small>
+                                ` : ''}
+                            </div>
+                            <div class="text-end ms-3">
+                                <div class="log-timestamp">${Utils.formatDate(log.timestamp)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatLogDetails(details) {
+            if (!details) return '';
+            
+            // Format details object into readable string
+            const keys = Object.keys(details);
+            if (keys.length === 0) return '';
+            
+            return keys.map(key => {
+                const value = details[key];
+                if (value && typeof value === 'object') {
+                    return `${key}: ${JSON.stringify(value)}`;
+                }
+                return `${key}: ${value}`;
+            }).join(', ');
+        }
+
+
+        function getActionIcon(action) {
+            const icons = {
+                login: 'bi-box-arrow-in-right',
+                create: 'bi-plus-circle',
+                update: 'bi-pencil-square',
+                delete: 'bi-trash',
+                upload: 'bi-upload',
+                checkin: 'bi-check-circle',
+                export: 'bi-download'
+            };
+            return icons[action] || 'bi-circle';
+        }
+
+        function getActionBadgeClass(action) {
+            const classes = {
+                login: 'primary',
+                create: 'success',
+                update: 'warning',
+                delete: 'danger',
+                upload: 'info',
+                checkin: 'success',
+                export: 'secondary'
+            };
+            return classes[action] || 'secondary';
+        }
+    </script>
+</body>
+</html>
