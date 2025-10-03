@@ -6,7 +6,7 @@
 const getApiBaseUrl = () => {
     // Check if running on localhost (development)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://localhost:8000';
+        return 'https://clgserver.duckdns.org';
     }
     
     // Production: Use environment variable injected by Vercel
@@ -19,7 +19,7 @@ const getApiBaseUrl = () => {
     }
     
     // Fallback: Hardcoded production URL (UPDATE THIS!)
-    return 'http://YOUR_EC2_IP:8000';
+    return 'https://clgserver.duckdns.org';
 };
 
 const CONFIG = {
