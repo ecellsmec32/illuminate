@@ -3,20 +3,23 @@
  * API endpoint configuration with environment detection
  */
 
-// Detect environment and set API URL
 const getApiBaseUrl = () => {
-    // Check if running on localhost
+    // Check if running on localhost (development)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:8000';
     }
     
-    // Production API URL (will be set via Vercel env variable)
-    if (typeof VITE_API_URL !== 'undefined') {
-        return VITE_API_URL;
+    // Production: Use environment variable injected by Vercel
+    // The environment variable will be replaced during build
+    const envApiUrl = '__VITE_API_URL__'; // Placeholder
+    
+    // If environment variable is set (not the placeholder)
+    if (envApiUrl && !envApiUrl.includes('__VITE_API_URL__')) {
+        return envApiUrl;
     }
     
-    // Default production URL (replace with your actual backend URL)
-    return window.location.protocol + '//api.qrflow.com';
+    // Fallback: Hardcoded production URL (UPDATE THIS!)
+    return 'http://YOUR_EC2_IP:8000';
 };
 
 const CONFIG = {
@@ -26,7 +29,7 @@ const CONFIG = {
 };
 
 // For debugging
-console.log('QrFlow Config:', CONFIG);
+console.log('QrFlow Config - API URL:', CONFIG.API_BASE_URL);
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
