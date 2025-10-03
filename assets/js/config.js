@@ -1,37 +1,10 @@
-/**
- * QrFlow - Configuration
- * API endpoint configuration with environment detection
- */
-
-const getApiBaseUrl = () => {
-    // Check if running on localhost (development)
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'https://clgserver.duckdns.org';
-    }
-    
-    // Production: Use environment variable injected by Vercel
-    // The environment variable will be replaced during build
-    const envApiUrl = '__VITE_API_URL__'; // Placeholder
-    
-    // If environment variable is set (not the placeholder)
-    if (envApiUrl && !envApiUrl.includes('__VITE_API_URL__')) {
-        return envApiUrl;
-    }
-    
-    // Fallback: Hardcoded production URL (UPDATE THIS!)
-    return 'https://clgserver.duckdns.org';
-};
-
 const CONFIG = {
-    API_BASE_URL: getApiBaseUrl(),
+    API_BASE_URL: window.location.hostname === 'localhost' 
+        ? 'http://localhost:8000'
+        : 'http://44.223.11.89',  // Use port 80 (Nginx)
+    
     APP_NAME: 'QrFlow',
     VERSION: '1.0.0'
 };
 
-// For debugging
-console.log('QrFlow Config - API URL:', CONFIG.API_BASE_URL);
-
-// Export for use in other files
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CONFIG;
-}
+console.log('🔗 QrFlow API URL:', CONFIG.API_BASE_URL);
