@@ -1,0 +1,24 @@
+{
+  "name": "qrflow-frontend",
+  "version": "1.0.0",
+  "description": "QrFlow Event Management System Frontend",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 8080",
+    "build": "echo 'Static site - no build required'",
+    "start": "python -m http.server 8080"
+  },
+  "keywords": [
+    "event-management",
+    "qr-code",
+    "check-in",
+    "frontend"
+  ],
+  "author": "QrFlow Team",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
