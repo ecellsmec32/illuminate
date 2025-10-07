@@ -1,0 +1,108 @@
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.1s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">What is the registration fee for the illuminate workshop?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>The registration fee for the illuminate workshop is ₹650.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.2s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">When and where is the illuminate workshop happening?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>The illuminate workshop will take place at St. Martin's Engineering College on 14th October from 10:00 AM.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.3s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">What is the last date to register for the event?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>The last date to register for the event is 12th October.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.4s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Will participants receive a certificate?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Yes, participants will receive a certificate from IIT Bombay.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.5s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Are there any free certification courses included?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Yes, free certification courses are included as part of the incentives for participants.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.6s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Is there a startup kit provided to participants?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Yes, a startup kit will be provided to all participants.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.7s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Will premium books or other resources be distributed?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Premium books from Rupa will be given to the participants.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.8s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Will there be opportunities for internships?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Internships will be given to workshop winners.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.9s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Do participants get free E-Summit passes?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Discounted E-Summit passes will be given to participants.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 1s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Is there a chance for interaction with mentors?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Yes, participants will have opportunities for interaction with mentors during the event.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 1.1s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Who is the point of contact for the event?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>The coordinator for the event is Rama Krishna and can be contacted at 6304052967.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 1.2s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Do I need a business idea to participate?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Not at all! The workshop is designed to help you with ideation techniques. You will learn how to generate and refine business ideas during the sessions. The event is perfect for those at the very beginning of their entrepreneurial journey.</p>
+</div>
+</details>

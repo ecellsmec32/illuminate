@@ -121,23 +121,122 @@
         }
         
         .incentive-card {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #fbbf24;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .incentive-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .incentive-card:hover::before {
+            left: 100%;
         }
         
         .incentive-card:hover {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            border-color: #FFC700;
-            transform: translateY(-5px);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            border-color: #d97706;
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(251, 191, 36, 0.3);
         }
         
         .dark .incentive-card {
-            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+            background: linear-gradient(135deg, #92400e 0%, #b45309 50%, #d97706 100%);
+            border: 2px solid #d97706;
         }
         
         .dark .incentive-card:hover {
-            background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+            background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%);
+            border-color: #f59e0b;
+            box-shadow: 0 25px 50px rgba(255, 199, 0, 0.2);
+        }
+        
+        /* Updated text colors for gold cards */
+        .incentive-title {
+            transition: all 0.3s ease;
+            font-weight: 700;
+            color: #92400e;
+        }
+        
+        .incentive-card:hover .incentive-title {
+            color: #78350f;
+            transform: translateY(-2px);
+        }
+        
+        .dark .incentive-title {
+            color: #fbbf24;
+        }
+        
+        .dark .incentive-card:hover .incentive-title {
+            color: #fcd34d;
+        }
+        
+        .incentive-description {
+            transition: all 0.3s ease;
+            color: #78350f;
+        }
+        
+        .incentive-card:hover .incentive-description {
+            color: #92400e;
+            transform: translateY(-1px);
+        }
+        
+        .dark .incentive-description {
+            color: #f59e0b;
+        }
+        
+        .dark .incentive-card:hover .incentive-description {
+            color: #fbbf24;
+        }
+        
+        /* Expandable details */
+        .incentive-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .incentive-card.expanded .incentive-details {
+            max-height: 200px;
+        }
+        
+        .expand-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .incentive-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .incentive-icon {
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+            color: #92400e !important;
+        }
+        
+        .incentive-card:hover .incentive-icon {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+            color: #78350f !important;
+        }
+        
+        .dark .incentive-icon {
+            color: #fbbf24 !important;
+        }
+        
+        .dark .incentive-card:hover .incentive-icon {
+            color: #fcd34d !important;
         }
         
         details > summary::-webkit-details-marker {
@@ -146,11 +245,71 @@
         
         .faq-item {
             transition: all 0.3s ease;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
         }
         
         .faq-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #FFC700;
+            background: linear-gradient(135deg, rgba(255, 199, 0, 0.1), rgba(255, 255, 255, 0.1));
+        }
+        
+        .dark .faq-item {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(55, 65, 81, 0.6));
+            border: 1px solid rgba(255, 199, 0, 0.2);
+        }
+        
+        .dark .faq-item:hover {
+            background: linear-gradient(135deg, rgba(255, 199, 0, 0.15), rgba(31, 41, 55, 0.9));
+            border-color: #FFC700;
+        }
+        
+        .faq-question {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .faq-question:hover {
+            color: #FFC700;
+        }
+        
+        .faq-icon {
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        
+        .faq-item[open] .faq-icon {
+            transform: rotate(45deg);
+            color: #FFC700;
+        }
+        
+        .faq-answer {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .faq-search {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 199, 0, 0.3);
+        }
+        
+        .dark .faq-search {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(55, 65, 81, 0.6));
+            border: 1px solid rgba(255, 199, 0, 0.3);
         }
         
         /* Enhanced mobile responsiveness */
@@ -210,7 +369,7 @@
 <header class="bg-card-light dark:bg-card-dark shadow-md sticky top-0 z-50">
 <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
 <div class="flex items-center space-x-4">
-<img alt="E-Cell SMEC Logo" class="h-12" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi_ZzEtYA8DiH943zYWNKVJjleb2hj3Sb-_ovqAoF4SvctS08wgdtE7deH-nPqiUw5sg59wMKZuMBHbcklQ0y6-GQmpzECgPI119O0_PcpfXWUM_l9dKBjxkLDJbjO9NxQ3UqkijuqOWxZheunuNuzeYJxVjai80KdmTamgcZibW4ib3SwiWq3bryIfmT9oPWRBA5QqSlLqLmeIY8aBJktId8rH2FjA_SYGuZ2Y1YcbBl8ikhr08toi3ccMN2hIEQrF5fr27FFTuY"/>
+<img alt="E-Cell SMEC Logo" class="h-12" src="Untitled design.png"/>
 <a class="text-xl font-bold font-display text-text-light dark:text-text-dark" href="#">E-Cell SMEC</a>
 </div>
 <div class="hidden md:flex items-center space-x-6">
@@ -354,72 +513,127 @@
 </div>
 </section>
 <section class="py-20 bg-background-light dark:bg-background-dark relative overflow-hidden" id="incentives">
-<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent"></div>
 <div class="container mx-auto px-6 relative z-10">
-<h2 class="text-4xl font-bold font-display text-center mb-12 text-text-light dark:text-text-dark fade-in">Incentives for <span class="gradient-text">Participants</span></h2>
+<h2 class="text-4xl font-bold font-display text-center mb-8 text-text-light dark:text-text-dark fade-in">Incentives for <span class="gradient-text">Participants</span></h2>
+<p class="text-center text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12 fade-in" style="animation-delay: 0.1s;">Unlock exclusive benefits and resources designed to accelerate your entrepreneurial journey</p>
 <div class="section-divider"></div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.1s;">
-<span class="material-icons text-primary text-4xl pulse-animation">school</span>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.1s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">verified</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Certificate from IIT Bombay</h3>
-<p class="text-gray-600 dark:text-gray-400">A prestigious certificate to boost your profile.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Certificate from IIT Bombay</h3>
+<p class="incentive-description leading-relaxed">A prestigious certificate to boost your profile and validate your entrepreneurial skills.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• Internationally recognized credential</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Enhances your professional portfolio</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Validates your entrepreneurial knowledge</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.2s;">
-<span class="material-icons text-primary text-4xl pulse-animation">inventory_2</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.2s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">business_center</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">A Startup Kit</h3>
-<p class="text-gray-600 dark:text-gray-400">Essential resources to kickstart your journey.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">A Startup Kit</h3>
+<p class="incentive-description leading-relaxed">Essential resources and tools to kickstart your entrepreneurial journey.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• Business plan templates</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Financial planning tools</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Marketing resources</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.3s;">
-<span class="material-icons text-primary text-4xl pulse-animation">local_activity</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.3s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">event</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Free E-Summit Passes</h3>
-<p class="text-gray-600 dark:text-gray-400">Exclusive access to premier entrepreneurship events.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Discounted E-Summit Passes</h3>
+<p class="incentive-description leading-relaxed">Exclusive access to premier entrepreneurship events and networking opportunities.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• Access to industry leaders</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Networking opportunities</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Latest industry insights</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.4s;">
-<span class="material-icons text-primary text-4xl pulse-animation">card_membership</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.4s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">school</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Free Certification Courses</h3>
-<p class="text-gray-600 dark:text-gray-400">Enhance your skills with valuable courses.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Free Certification Courses</h3>
+<p class="incentive-description leading-relaxed">Enhance your skills with valuable courses from industry experts.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• Industry-recognized certificates</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Self-paced learning</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Expert-led content</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.5s;">
-<span class="material-icons text-primary text-4xl pulse-animation">menu_book</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.5s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">auto_stories</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Premium Books from rupa</h3>
-<p class="text-gray-600 dark:text-gray-400">Gain knowledge from top-tier publications.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Premium Books from Rupa</h3>
+<p class="incentive-description leading-relaxed">Gain knowledge from top-tier publications and industry insights.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• Curated business books</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Latest entrepreneurship trends</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Expert-authored content</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.6s;">
-<span class="material-icons text-primary text-4xl pulse-animation">work</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.6s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">work_outline</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Internships</h3>
-<p class="text-gray-600 dark:text-gray-400">Get hands-on experience with promising startups.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Internships</h3>
+<p class="incentive-description leading-relaxed">Get hands-on experience with promising startups and established companies.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• Real-world experience</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Industry connections</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Career development</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.7s;">
-<span class="material-icons text-primary text-4xl pulse-animation">military_tech</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.7s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">emoji_events</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Badges</h3>
-<p class="text-gray-600 dark:text-gray-400">Digital badges to showcase your participation.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Digital Badges</h3>
+<p class="incentive-description leading-relaxed">Digital badges to showcase your participation and achievements.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• LinkedIn profile enhancement</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Portfolio credibility</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Achievement recognition</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.8s;">
-<span class="material-icons text-primary text-4xl pulse-animation">redeem</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.8s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">card_giftcard</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Merchandise and Goodies</h3>
-<p class="text-gray-600 dark:text-gray-400">Exclusive event merchandise and swags.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Merchandise & Goodies</h3>
+<p class="incentive-description leading-relaxed">Exclusive event merchandise and swags to remember your journey.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• Branded merchandise</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Exclusive event swags</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Memorable keepsakes</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
-<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.9s;">
-<span class="material-icons text-primary text-4xl pulse-animation">groups</span>
+<div class="incentive-card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-4 card-hover fade-in" style="animation-delay: 0.9s;" onclick="toggleIncentive(this)">
+<span class="material-icons incentive-icon text-5xl pulse-animation">psychology</span>
 <div>
-<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Interaction with Mentors</h3>
-<p class="text-gray-600 dark:text-gray-400">Connect with industry experts and mentors.</p>
+<h3 class="incentive-title text-xl font-bold mb-2">Mentor Interaction</h3>
+<p class="incentive-description leading-relaxed">Connect with industry experts and mentors for valuable guidance.</p>
+<div class="incentive-details mt-4">
+<p class="text-sm text-gray-600 dark:text-gray-400">• One-on-one mentorship</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Industry insights</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">• Career guidance</p>
+</div>
+<span class="material-icons expand-icon text-primary mt-2">expand_more</span>
 </div>
 </div>
 </div>
@@ -428,45 +642,128 @@
 <section class="py-20 bg-card-light dark:bg-card-dark relative overflow-hidden" id="faq">
 <div class="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent"></div>
 <div class="container mx-auto px-6 relative z-10">
-<h2 class="text-4xl font-bold font-display text-center mb-12 text-text-light dark:text-text-dark fade-in">Frequently Asked <span class="gradient-text">Questions</span></h2>
+<h2 class="text-4xl font-bold font-display text-center mb-8 text-text-light dark:text-text-dark fade-in">Frequently Asked <span class="gradient-text">Questions</span></h2>
+<p class="text-center text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-12 fade-in" style="animation-delay: 0.1s;">Find answers to common questions about the Illuminate workshop</p>
 <div class="section-divider"></div>
-<div class="max-w-3xl mx-auto space-y-4">
-<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.1s;">
-<summary class="flex justify-between items-center cursor-pointer list-none">
-<span class="font-semibold text-text-light dark:text-text-dark">Who can participate in this event?</span>
-<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
-</summary>
-<div class="mt-4 text-gray-600 dark:text-gray-400">
-<p>This event is open to all students from any college or university who are interested in entrepreneurship. Whether you're a budding entrepreneur or just curious, you are welcome.</p>
+
+<!-- FAQ Search -->
+<div class="max-w-2xl mx-auto mb-12 fade-in" style="animation-delay: 0.2s;">
+    <div class="relative">
+        <input type="text" id="faq-search" placeholder="Search FAQ questions..." class="w-full px-6 py-4 pr-12 rounded-xl faq-search text-text-light dark:text-text-dark placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300">
+        <span class="material-icons absolute right-4 top-1/2 transform -translate-y-1/2 text-primary">search</span>
+    </div>
 </div>
-</details>
-<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.2s;">
-<summary class="flex justify-between items-center cursor-pointer list-none">
-<span class="font-semibold text-text-light dark:text-text-dark">Is it a team event or an individual event?</span>
-<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
-</summary>
-<div class="mt-4 text-gray-600 dark:text-gray-400">
-<p>You can participate individually. The registration fee is per person.</p>
+
+<div class="max-w-4xl mx-auto space-y-4">
+<details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.1s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">What is the registration fee for the illuminate workshop?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>The registration fee for the illuminate workshop is ₹650.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.2s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">When and where is the illuminate workshop happening?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>The illuminate workshop will take place at St. Martin's Engineering College on 14th October from 10:00 AM.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.3s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">What is the last date to register for the event?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>The last date to register for the event is 12th October.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.4s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Will participants receive a certificate?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Yes, participants will receive a certificate from IIT Bombay.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.5s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Are there any free certification courses included?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Yes, free certification courses are included as part of the incentives for participants.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.6s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Is there a startup kit provided to participants?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Yes, a startup kit will be provided to all participants.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.7s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Will premium books or other resources be distributed?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Premium books from Rupa will be given to the participants.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.8s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Will there be opportunities for internships?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Internships will be given to workshop winners.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 0.9s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Do participants get free E-Summit passes?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Discounted E-Summit passes will be given to participants.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 1s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Is there a chance for interaction with mentors?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Yes, participants will have opportunities for interaction with mentors during the event.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 1.1s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Who is the point of contact for the event?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>The coordinator for the event is Rama Krishna and can be contacted at 6304052967.</p>
+    </div>
+    </details>
+    <details class="faq-item bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg group fade-in" style="animation-delay: 1.2s;">
+    <summary class="flex justify-between items-center cursor-pointer list-none">
+    <span class="faq-question font-semibold text-text-light dark:text-text-dark text-lg">Do I need a business idea to participate?</span>
+    <span class="material-icons faq-icon text-primary text-2xl">add</span>
+    </summary>
+    <div class="faq-answer mt-4 text-gray-600 dark:text-gray-400 text-base leading-relaxed">
+    <p>Not at all! The workshop is designed to help you with ideation techniques. You will learn how to generate and refine business ideas during the sessions. The event is perfect for those at the very beginning of their entrepreneurial journey.</p>
+    </div>
+    </details>
 </div>
-</details>
-<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.3s;">
-<summary class="flex justify-between items-center cursor-pointer list-none">
-<span class="font-semibold text-text-light dark:text-text-dark">What do I get for the registration fee of ₹650?</span>
-<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
-</summary>
-<div class="mt-4 text-gray-600 dark:text-gray-400">
-<p>The fee covers your participation in all sessions, activities, and the pitching competition. It also includes the full list of incentives like the certificate from E-Cell IIT Bombay, a startup kit, free e-summit passes, and much more. Please check the 'Incentives' section for a complete list.</p>
-</div>
-</details>
-<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.4s;">
-<summary class="flex justify-between items-center cursor-pointer list-none">
-<span class="font-semibold text-text-light dark:text-text-dark">Do I need a business idea to participate?</span>
-<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
-</summary>
-<div class="mt-4 text-gray-600 dark:text-gray-400">
-<p>Not at all! The workshop is designed to help you with ideation techniques. You will learn how to generate and refine business ideas during the sessions. The event is perfect for those at the very beginning of their entrepreneurial journey.</p>
-</div>
-</details>
 </div>
 </div>
 </section>
@@ -499,9 +796,8 @@
 <div>
 <h3 class="text-lg font-bold text-white mb-2">Follow Us</h3>
 <div class="flex space-x-4">
-<a class="hover:text-primary transition-colors flex items-center" href="https://ecell-smec.com" target="_blank"><span class="material-icons mr-1">language</span>Website</a>
-<a class="hover:text-primary transition-colors flex items-center" href="#"><svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"></path></svg>LinkedIn</a>
-<a class="hover:text-primary transition-colors flex items-center" href="#"><svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"></path></svg>Instagram</a>
+<a class="hover:text-primary transition-colors flex items-center" href="https://www.linkedin.com/company/ecell-smec/?viewAsMember=true" target="_blank"><svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"></path></svg>LinkedIn</a>
+<a class="hover:text-primary transition-colors flex items-center" href="https://www.instagram.com/ecell.smec?igsh=dGRsY210ZThsdnRw" target="_blank"><svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"></path></svg>Instagram</a>
 </div>
 </div>
 </div>
@@ -516,5 +812,48 @@
         menuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
+
+        // FAQ Search functionality
+        const faqSearch = document.getElementById('faq-search');
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        if (faqSearch) {
+            faqSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                    const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                    
+                    if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        item.style.opacity = '1';
+                    } else {
+                        item.style.display = 'none';
+                        item.style.opacity = '0';
+                    }
+                });
+            });
+        }
+
+        // Enhanced FAQ interactions
+        faqItems.forEach(item => {
+            const summary = item.querySelector('summary');
+            const icon = item.querySelector('.faq-icon');
+            
+            summary.addEventListener('click', () => {
+                // Close other open items (optional - remove if you want multiple open)
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.hasAttribute('open')) {
+                        otherItem.removeAttribute('open');
+                    }
+                });
+            });
+        });
+
+        // Incentive card expand/collapse functionality
+        function toggleIncentive(card) {
+            card.classList.toggle('expanded');
+        }
     </script>
 </body></html>
