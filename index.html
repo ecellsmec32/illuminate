@@ -1,128 +1,520 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - QrFlow</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <!-- QrFlow Custom CSS -->
-    <link href="assets/css/qrflow.css" rel="stylesheet">
-</head>
-<body>
-    <div class="login-container">
-        <div class="card login-card">
-            <div class="card-body">
-                <!-- Logo and Header -->
-                <div class="login-header">
-                    <div class="qrflow-logo justify-content-center mb-3">
-                        <div class="logo-icon">
-                            <i class="bi bi-qr-code"></i>
-                        </div>
-                        <span>QrFlow</span>
-                    </div>
-                    <h1>Welcome Back</h1>
-                    <p class="text-muted">Sign in to manage your events</p>
-                </div>
-
-                <!-- Login Form -->
-                <form id="loginForm">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">
-                            <i class="bi bi-person"></i> Username
-                        </label>
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            id="username" 
-                            placeholder="Enter your username"
-                            required
-                            autofocus
-                        >
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">
-                            <i class="bi bi-lock"></i> Password
-                        </label>
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            id="password" 
-                            placeholder="Enter your password"
-                            required
-                        >
-                    </div>
-
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">
-                            Remember me
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-mobile-full" id="loginBtn">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Sign In</span>
-                    </button>
-                </form>
-
-                <!-- Additional Info -->
-                <div class="text-center mt-4">
-                    <small class="text-muted">
-                        <i class="bi bi-info-circle"></i>
-                        Contact your administrator for account access
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/api.js"></script>
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/utils.js"></script>
-    
-    <script>
-        // Redirect if already logged in
-        if (Auth.isAuthenticated()) {
-            const user = Auth.getCurrentUser();
-            if (user.role === 'admin') {
-                window.location.href = 'admin/dashboard.html';
-            } else {
-                window.location.href = 'organizer/dashboard.html';
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" name="viewport"/>
+<title>Illuminate - E-Cell SMEC</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FFC700",
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#111827",
+                        "text-light": "#1F2937",
+                        "text-dark": "#F9FAFB",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1F2937",
+                        "accent-light": "#FEF3C7",
+                        "accent-dark": "#374151"
+                    },
+                    fontFamily: {
+                        display: ["Montserrat", "sans-serif"],
+                        body: ["Roboto", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        .hero-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            background-position: center;
+            animation: gradientShift 8s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 20px #FFC700, 0 0 40px #FFC700, 0 0 60px #FFC700;
+            animation: glowPulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glowPulse {
+            from { text-shadow: 0 0 20px #FFC700, 0 0 40px #FFC700, 0 0 60px #FFC700; }
+            to { text-shadow: 0 0 30px #FFC700, 0 0 60px #FFC700, 0 0 80px #FFC700; }
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-
-        // Handle login form submission
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const loginBtn = document.getElementById('loginBtn');
-            
-            // Disable button and show loading
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
-            
-            try {
-                await Auth.login(username, password);
-                // Redirect happens in Auth.login()
-            } catch (error) {
-                Utils.showToast(error.message || 'Login failed. Please check your credentials.', 'error');
-                
-                // Re-enable button
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i><span>Sign In</span>';
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #FFC700, #FF6B6B, #4ECDC4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .timeline-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(10px);
+        }
+        
+        .incentive-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .incentive-card:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-color: #FFC700;
+            transform: translateY(-5px);
+        }
+        
+        .dark .incentive-card {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+        }
+        
+        .dark .incentive-card:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+        }
+        
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .faq-item {
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 640px) {
+            .text-7xl {
+                font-size: 3rem;
             }
+            .text-9xl {
+                font-size: 4rem;
+            }
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Touch-friendly buttons */
+        @media (max-width: 768px) {
+            .hover\:scale-105:hover {
+                transform: scale(1.02);
+            }
+            button, a {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* Smooth scrolling for all devices */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Better text rendering on mobile */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #FFC700, transparent);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-body text-text-light dark:text-text-dark transition-colors duration-300">
+<header class="bg-card-light dark:bg-card-dark shadow-md sticky top-0 z-50">
+<nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+<div class="flex items-center space-x-4">
+<img alt="E-Cell SMEC Logo" class="h-12" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi_ZzEtYA8DiH943zYWNKVJjleb2hj3Sb-_ovqAoF4SvctS08wgdtE7deH-nPqiUw5sg59wMKZuMBHbcklQ0y6-GQmpzECgPI119O0_PcpfXWUM_l9dKBjxkLDJbjO9NxQ3UqkijuqOWxZheunuNuzeYJxVjai80KdmTamgcZibW4ib3SwiWq3bryIfmT9oPWRBA5QqSlLqLmeIY8aBJktId8rH2FjA_SYGuZ2Y1YcbBl8ikhr08toi3ccMN2hIEQrF5fr27FFTuY"/>
+<a class="text-xl font-bold font-display text-text-light dark:text-text-dark" href="#">E-Cell SMEC</a>
+</div>
+<div class="hidden md:flex items-center space-x-6">
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="#about">About E-Cell</a>
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="#event">Illuminate</a>
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="#structure">Event Structure</a>
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="#incentives">Incentives</a>
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="#faq">FAQ</a>
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="login.html">Admin Login</a>
+<a class="bg-primary text-gray-900 font-bold py-2 px-4 rounded-full hover:bg-yellow-400 transition-colors" href="https://pages.razorpay.com/illuminate" target="_blank">Register Now</a>
+</div>
+<div class="md:hidden">
+<button class="text-text-light dark:text-text-dark" id="menu-btn">
+<span class="material-icons">menu</span>
+</button>
+</div>
+</nav>
+<div class="hidden" id="mobile-menu">
+<a class="block py-2 px-4 text-sm hover:bg-accent-light dark:hover:bg-accent-dark" href="#about">About E-Cell</a>
+<a class="block py-2 px-4 text-sm hover:bg-accent-light dark:hover:bg-accent-dark" href="#event">Illuminate</a>
+<a class="block py-2 px-4 text-sm hover:bg-accent-light dark:hover:bg-accent-dark" href="#structure">Event Structure</a>
+<a class="block py-2 px-4 text-sm hover:bg-accent-light dark:hover:bg-accent-dark" href="#incentives">Incentives</a>
+<a class="block py-2 px-4 text-sm hover:bg-accent-light dark:hover:bg-accent-dark" href="#faq">FAQ</a>
+<a class="block py-2 px-4 text-sm hover:bg-accent-light dark:hover:bg-accent-dark" href="login.html">Admin Login</a>
+<a class="block py-2 px-4 text-sm bg-primary text-gray-900 font-bold hover:bg-yellow-400" href="https://pages.razorpay.com/illuminate" target="_blank">Register Now</a>
+</div>
+</header>
+<main>
+<section class="relative text-white hero-bg" id="event">
+<div class="absolute inset-0 bg-black opacity-70"></div>
+<div class="container mx-auto px-6 py-24 relative z-10 flex flex-col items-center text-center">
+<div class="mb-4">
+<p class="text-lg font-semibold text-gray-300">St. Martin's Engineering College in association with E-Cell IIT Bombay</p>
+</div>
+<div class="flex items-center justify-center mb-2 fade-in">
+<h1 class="text-7xl md:text-9xl font-black font-display tracking-wider gradient-text">illuminate</h1>
+</div>
+<p class="text-2xl md:text-3xl font-bold font-display text-primary mb-8">EMPOWERING THE NEXT GENERATION OF CHANGEMAKERS</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full max-w-4xl mb-12">
+<div class="glass-effect p-6 rounded-lg flex flex-col items-center card-hover fade-in" style="animation-delay: 0.2s;">
+<span class="material-icons text-primary text-4xl mb-2 pulse-animation">event</span>
+<h3 class="text-xl font-bold">14th Oct</h3>
+<p class="text-lg">From 10:00 AM</p>
+</div>
+<div class="bg-primary/90 backdrop-blur-sm p-6 rounded-lg border border-yellow-300 flex flex-col items-center transform scale-110 shadow-2xl pulse-animation card-hover">
+<span class="material-icons text-gray-900 text-4xl mb-2">how_to_reg</span>
+<h3 class="text-2xl font-black text-gray-900">Registration Fee</h3>
+<p class="text-5xl font-bold text-gray-900">₹650</p>
+</div>
+<div class="glass-effect p-6 rounded-lg flex flex-col items-center card-hover fade-in" style="animation-delay: 0.4s;">
+<span class="material-icons text-primary text-4xl mb-2 pulse-animation">warning</span>
+<h3 class="text-xl font-bold">Last Date</h3>
+<p class="text-lg">12th Oct</p>
+</div>
+</div>
+<a class="bg-primary text-gray-900 font-bold py-4 px-8 rounded-full text-lg hover:bg-yellow-400 transition-transform transform hover:scale-105" href="https://pages.razorpay.com/illuminate" target="_blank">
+                    Register for Illuminate
+                </a>
+</div>
+</section>
+<section class="py-20 bg-background-light dark:bg-background-dark relative overflow-hidden" id="about">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+<div class="container mx-auto px-6 relative z-10">
+<h2 class="text-4xl font-bold font-display text-center mb-4 text-text-light dark:text-text-dark fade-in">About <span class="gradient-text">E-Cell SMEC</span></h2>
+<p class="text-center text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12 fade-in" style="animation-delay: 0.2s;">DREAM DESIGN DELIVERY</p>
+<div class="section-divider"></div>
+<div class="flex flex-col md:flex-row items-center gap-12">
+<div class="md:w-1/2 fade-in" style="animation-delay: 0.3s;">
+<img alt="Group of students collaborating" class="rounded-lg shadow-2xl card-hover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW3MvOXEf4qkexFUkpK3rsuKqwfJHTHtuPrmxtK2HqOklBMtifNtA0fegkWpyMlfCQXeIIKUtDb5J-vJxaklxKHxZvde-5-oKCO8OJeBD5Fah5hnTXZ1LXiSlB2AnkCqg2JZuw2vOYlgPmdZos81wP9pLxELLXZ81vJKHm-Ml3W8MFNTnWDGtogP1NSqNnXGh-CDBmu83TRkWfbxpNB1_-_br0ZnqNpsHcdi3T1TQ0egzcPZHyW0Bgv_AOt3NPTj3TdTDkXamaTZA"/>
+</div>
+<div class="md:w-1/2 fade-in" style="animation-delay: 0.4s;">
+<p class="mb-4 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+                            The Entrepreneurship Cell (E-Cell) at St. Martin's Engineering College is a student-run body dedicated to fostering the spirit of entrepreneurship among students. We aim to create a vibrant ecosystem that encourages innovation, creativity, and the development of new ventures.
+                        </p>
+<p class="mb-4 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+                            Our mission is to provide a platform for aspiring entrepreneurs to learn, network, and grow. We organize workshops, speaker sessions, competitions, and mentorship programs to equip students with the necessary skills and knowledge to turn their ideas into successful businesses.
+                        </p>
+<p class="font-semibold text-text-light dark:text-text-dark text-lg">
+                            By collaborating with industry leaders, successful entrepreneurs, and prestigious institutions like IIT Bombay, we strive to provide our students with the best possible resources and opportunities.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 bg-card-light dark:bg-card-dark relative overflow-hidden" id="structure">
+<div class="absolute inset-0 bg-gradient-to-tl from-primary/5 to-transparent"></div>
+<div class="container mx-auto px-6 relative z-10">
+<h2 class="text-4xl font-bold font-display text-center mb-12 text-text-light dark:text-text-dark fade-in">Total Structure of <span class="gradient-text">Event</span></h2>
+<div class="max-w-4xl mx-auto">
+<div class="relative pl-8 border-l-2 border-primary/50">
+<div class="mb-12 timeline-item fade-in" style="animation-delay: 0.1s;">
+<div class="absolute w-6 h-6 bg-primary rounded-full -left-3 border-4 border-card-light dark:border-card-dark pulse-animation"></div>
+<p class="text-sm font-semibold text-primary mb-1">10:00 AM - 10:15 AM (15 MIN)</p>
+<h3 class="text-xl font-bold font-display text-text-light dark:text-text-dark mb-2">Introduction</h3>
+<p class="text-gray-600 dark:text-gray-400">Introduction to E-Cell SMEC and E-Cell IIT Bombay.</p>
+</div>
+<div class="mb-12 timeline-item fade-in" style="animation-delay: 0.2s;">
+<div class="absolute w-6 h-6 bg-primary rounded-full -left-3 border-4 border-card-light dark:border-card-dark pulse-animation"></div>
+<p class="text-sm font-semibold text-primary mb-1">10:15 AM - 11:30 AM (75 MIN)</p>
+<h3 class="text-xl font-bold font-display text-text-light dark:text-text-dark mb-2">First Session: Entrepreneurship 101</h3>
+<ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-1">
+<li>What is Entrepreneurship?</li>
+<li>Ideation Techniques.</li>
+</ul>
+</div>
+<div class="mb-12 timeline-item fade-in" style="animation-delay: 0.3s;">
+<div class="absolute w-6 h-6 bg-primary rounded-full -left-3 border-4 border-card-light dark:border-card-dark pulse-animation"></div>
+<p class="text-sm font-semibold text-primary mb-1">11:30 AM - 12:00 PM (30 MIN)</p>
+<h3 class="text-xl font-bold font-display text-text-light dark:text-text-dark mb-2">Activity 1</h3>
+<p class="text-gray-600 dark:text-gray-400">Activity based on the first session.</p>
+</div>
+<div class="mb-12 timeline-item fade-in" style="animation-delay: 0.4s;">
+<div class="absolute w-6 h-6 bg-primary rounded-full -left-3 border-4 border-card-light dark:border-card-dark pulse-animation"></div>
+<p class="text-sm font-semibold text-primary mb-1">12:00 PM - 1:15 PM (75 MIN)</p>
+<h3 class="text-xl font-bold font-display text-text-light dark:text-text-dark mb-2">Second Session: Business Model Canvas</h3>
+<ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-1">
+<li>How to make a Business Model.</li>
+<li>Marketing &amp; Sales.</li>
+</ul>
+</div>
+<div class="mb-12 timeline-item fade-in" style="animation-delay: 0.5s;">
+<div class="absolute w-6 h-6 bg-primary rounded-full -left-3 border-4 border-card-light dark:border-card-dark pulse-animation"></div>
+<p class="text-sm font-semibold text-primary mb-1">1:15 PM - 1:45 PM (30 MIN)</p>
+<h3 class="text-xl font-bold font-display text-text-light dark:text-text-dark mb-2">Activity 2</h3>
+<p class="text-gray-600 dark:text-gray-400">Activity based on the second session.</p>
+</div>
+<div class="mb-12 timeline-item fade-in" style="animation-delay: 0.6s;">
+<div class="absolute w-6 h-6 bg-primary rounded-full -left-3 border-4 border-card-light dark:border-card-dark pulse-animation"></div>
+<p class="text-sm font-semibold text-primary mb-1">1:45 PM - 2:00 PM (15 MIN)</p>
+<h3 class="text-xl font-bold font-display text-text-light dark:text-text-dark mb-2">Third Session: Pitching</h3>
+<p class="text-gray-600 dark:text-gray-400">How to pitch your idea.</p>
+</div>
+<div class="mb-12 timeline-item fade-in" style="animation-delay: 0.7s;">
+<div class="absolute w-6 h-6 bg-primary rounded-full -left-3 border-4 border-card-light dark:border-card-dark pulse-animation"></div>
+<p class="text-sm font-semibold text-primary mb-1">2:00 PM onwards</p>
+<h3 class="text-xl font-bold font-display text-text-light dark:text-text-dark mb-2">Competition</h3>
+<p class="text-gray-600 dark:text-gray-400">The Pitching Competition begins.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 bg-background-light dark:bg-background-dark relative overflow-hidden" id="incentives">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+<div class="container mx-auto px-6 relative z-10">
+<h2 class="text-4xl font-bold font-display text-center mb-12 text-text-light dark:text-text-dark fade-in">Incentives for <span class="gradient-text">Participants</span></h2>
+<div class="section-divider"></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.1s;">
+<span class="material-icons text-primary text-4xl pulse-animation">school</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Certificate from IIT Bombay</h3>
+<p class="text-gray-600 dark:text-gray-400">A prestigious certificate to boost your profile.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.2s;">
+<span class="material-icons text-primary text-4xl pulse-animation">inventory_2</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">A Startup Kit</h3>
+<p class="text-gray-600 dark:text-gray-400">Essential resources to kickstart your journey.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.3s;">
+<span class="material-icons text-primary text-4xl pulse-animation">local_activity</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Free E-Summit Passes</h3>
+<p class="text-gray-600 dark:text-gray-400">Exclusive access to premier entrepreneurship events.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.4s;">
+<span class="material-icons text-primary text-4xl pulse-animation">card_membership</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Free Certification Courses</h3>
+<p class="text-gray-600 dark:text-gray-400">Enhance your skills with valuable courses.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.5s;">
+<span class="material-icons text-primary text-4xl pulse-animation">menu_book</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Premium Books from rupa</h3>
+<p class="text-gray-600 dark:text-gray-400">Gain knowledge from top-tier publications.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.6s;">
+<span class="material-icons text-primary text-4xl pulse-animation">work</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Internships</h3>
+<p class="text-gray-600 dark:text-gray-400">Get hands-on experience with promising startups.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.7s;">
+<span class="material-icons text-primary text-4xl pulse-animation">military_tech</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Badges</h3>
+<p class="text-gray-600 dark:text-gray-400">Digital badges to showcase your participation.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.8s;">
+<span class="material-icons text-primary text-4xl pulse-animation">redeem</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Merchandise and Goodies</h3>
+<p class="text-gray-600 dark:text-gray-400">Exclusive event merchandise and swags.</p>
+</div>
+</div>
+<div class="incentive-card p-6 rounded-lg shadow-md flex items-center space-x-4 card-hover fade-in" style="animation-delay: 0.9s;">
+<span class="material-icons text-primary text-4xl pulse-animation">groups</span>
+<div>
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark">Interaction with Mentors</h3>
+<p class="text-gray-600 dark:text-gray-400">Connect with industry experts and mentors.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 bg-card-light dark:bg-card-dark relative overflow-hidden" id="faq">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent"></div>
+<div class="container mx-auto px-6 relative z-10">
+<h2 class="text-4xl font-bold font-display text-center mb-12 text-text-light dark:text-text-dark fade-in">Frequently Asked <span class="gradient-text">Questions</span></h2>
+<div class="section-divider"></div>
+<div class="max-w-3xl mx-auto space-y-4">
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.1s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Who can participate in this event?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>This event is open to all students from any college or university who are interested in entrepreneurship. Whether you're a budding entrepreneur or just curious, you are welcome.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.2s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Is it a team event or an individual event?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>You can participate individually. The registration fee is per person.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.3s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">What do I get for the registration fee of ₹650?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>The fee covers your participation in all sessions, activities, and the pitching competition. It also includes the full list of incentives like the certificate from E-Cell IIT Bombay, a startup kit, free e-summit passes, and much more. Please check the 'Incentives' section for a complete list.</p>
+</div>
+</details>
+<details class="faq-item bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-sm group fade-in" style="animation-delay: 0.4s;">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-semibold text-text-light dark:text-text-dark">Do I need a business idea to participate?</span>
+<span class="material-icons text-primary transition-transform duration-300 transform group-open:rotate-45">add</span>
+</summary>
+<div class="mt-4 text-gray-600 dark:text-gray-400">
+<p>Not at all! The workshop is designed to help you with ideation techniques. You will learn how to generate and refine business ideas during the sessions. The event is perfect for those at the very beginning of their entrepreneurial journey.</p>
+</div>
+</details>
+</div>
+</div>
+</section>
+<section class="py-20 bg-background-light dark:bg-background-dark relative overflow-hidden" id="register">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+<div class="container mx-auto px-6 text-center relative z-10">
+<h2 class="text-4xl font-bold font-display mb-4 text-text-light dark:text-text-dark fade-in">Ready to be <span class="gradient-text">Illuminated</span>?</h2>
+<p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8 fade-in" style="animation-delay: 0.2s;">
+                    Secure your spot and embark on a transformative journey into the world of entrepreneurship. The future is bright, and it starts here.
+                </p>
+<div class="section-divider"></div>
+<a class="bg-primary text-gray-900 font-bold py-4 px-10 rounded-full text-xl hover:bg-yellow-400 transition-transform transform hover:scale-105 inline-block shadow-lg pulse-animation fade-in" style="animation-delay: 0.3s;" href="https://pages.razorpay.com/illuminate" target="_blank">Register Now for ₹650</a>
+<p class="mt-4 text-sm text-gray-500 dark:text-gray-400 fade-in" style="animation-delay: 0.4s;">Registration closes on <span class="font-semibold text-primary">12th Oct</span>.</p>
+</div>
+</section>
+</main>
+<footer class="bg-card-dark text-gray-300">
+<div class="container mx-auto px-6 py-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+<div>
+<h3 class="text-lg font-bold text-white mb-2">E-Cell SMEC</h3>
+<p class="text-sm">St. Martin's Engineering College</p>
+<p class="text-sm">Empowering the next generation of changemakers.</p>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white mb-2">Contact Us</h3>
+<p class="text-sm flex items-center"><span class="material-icons text-primary mr-2 text-base">person</span>Coordinator - Rama Krishna</p>
+<p class="text-sm flex items-center"><span class="material-icons text-primary mr-2 text-base">phone</span>6304052967</p>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white mb-2">Follow Us</h3>
+<div class="flex space-x-4">
+<a class="hover:text-primary transition-colors flex items-center" href="https://ecell-smec.com" target="_blank"><span class="material-icons mr-1">language</span>Website</a>
+<a class="hover:text-primary transition-colors flex items-center" href="#"><svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"></path></svg>LinkedIn</a>
+<a class="hover:text-primary transition-colors flex items-center" href="#"><svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"></path></svg>Instagram</a>
+</div>
+</div>
+</div>
+<div class="mt-8 border-t border-gray-700 pt-4 text-center text-sm">
+<p>© 2024 E-Cell, St. Martin's Engineering College. All rights reserved.</p>
+</div>
+</div>
+</footer>
+<script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
     </script>
-</body>
-</html>
+</body></html>
