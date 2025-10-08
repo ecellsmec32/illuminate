@@ -171,7 +171,11 @@
                 'https://nyxgenai.com:5000',
                 'https://nyxgenai.com/api',
                 'https://nyxgenai.com/docs',
-                'https://nyxgenai.com/health'
+                'https://nyxgenai.com/health',
+                'https://nyxgenai.com/api/docs',
+                'https://nyxgenai.com/api/health',
+                'https://nyxgenai.com/api/v1',
+                'https://nyxgenai.com/api/v1/health'
             ];
             
             let results = [];
@@ -185,7 +189,11 @@
                         }
                     });
                     
-                    results.push(`✅ ${url} - Status: ${response.status}`);
+                    const responseText = await response.text();
+                    const isJson = responseText.startsWith('{') || responseText.startsWith('[');
+                    const preview = isJson ? JSON.stringify(JSON.parse(responseText), null, 2).substring(0, 100) : responseText.substring(0, 100);
+                    
+                    results.push(`✅ ${url} - Status: ${response.status}\n   Preview: ${preview}...`);
                 } catch (error) {
                     results.push(`❌ ${url} - Error: ${error.message}`);
                 }
