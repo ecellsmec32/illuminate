@@ -57,7 +57,9 @@
 
     <div class="test-section">
         <h3>2. Backend Health Check</h3>
-        <button onclick="testHealthCheck()">Test Backend Connection</button>
+        <button onclick="testHealthCheck()">Test /api/health</button>
+        <button onclick="testRootEndpoint()">Test Root Domain</button>
+        <button onclick="testAlternativePorts()">Test Alternative Ports</button>
         <div id="health-result"></div>
     </div>
 
@@ -83,7 +85,7 @@
 
         async function testHealthCheck() {
             const resultDiv = document.getElementById('health-result');
-            resultDiv.innerHTML = '<p>Testing backend connection...</p>';
+            resultDiv.innerHTML = '<p>Testing /api/health endpoint...</p>';
             
             try {
                 const response = await fetch(`${CONFIG.API_BASE_URL}/api/health`, {
@@ -97,14 +99,14 @@
                     const data = await response.json();
                     resultDiv.innerHTML = `
                         <div class="success">
-                            <h4>✅ Backend is reachable!</h4>
+                            <h4>✅ /api/health endpoint is working!</h4>
                             <pre>${JSON.stringify(data, null, 2)}</pre>
                         </div>
                     `;
                 } else {
                     resultDiv.innerHTML = `
                         <div class="error">
-                            <h4>❌ Backend responded with error</h4>
+                            <h4>❌ /api/health responded with error</h4>
                             <p>Status: ${response.status} ${response.statusText}</p>
                         </div>
                     `;
@@ -112,12 +114,89 @@
             } catch (error) {
                 resultDiv.innerHTML = `
                     <div class="error">
-                        <h4>❌ Connection failed</h4>
+                        <h4>❌ /api/health endpoint failed</h4>
                         <p>Error: ${error.message}</p>
-                        <p>This might be a CORS issue or the backend is not running.</p>
+                        <p>This endpoint might not exist or the server is not running.</p>
                     </div>
                 `;
             }
+        }
+
+        async function testRootEndpoint() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<p>Testing root domain...</p>';
+            
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Root domain is reachable!</h4>
+                            <p>Response: ${data.substring(0, 200)}...</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Root domain responded with error</h4>
+                            <p>Status: ${response.status} ${response.statusText}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Root domain connection failed</h4>
+                        <p>Error: ${error.message}</p>
+                        <p>The server at nyxgenai.com is not responding.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testAlternativePorts() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<p>Testing alternative ports and paths...</p>';
+            
+            const testUrls = [
+                'https://nyxgenai.com:8000',
+                'https://nyxgenai.com:3000',
+                'https://nyxgenai.com:5000',
+                'https://nyxgenai.com/api',
+                'https://nyxgenai.com/docs',
+                'https://nyxgenai.com/health'
+            ];
+            
+            let results = [];
+            
+            for (const url of testUrls) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    results.push(`✅ ${url} - Status: ${response.status}`);
+                } catch (error) {
+                    results.push(`❌ ${url} - Error: ${error.message}`);
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>🔍 Alternative Endpoints Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                </div>
+            `;
         }
 
         async function testCORS() {
