@@ -1,245 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management - QrFlow</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../assets/css/qrflow.css" rel="stylesheet">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>User Management - QrFlow Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="../assets/css/qrflow.css" rel="stylesheet"/>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="qrflow-navbar">
-        <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center">
-                <a href="dashboard.html" class="qrflow-logo">
-                    <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
-                    <span>QrFlow</span>
-                    <span class="badge badge-danger ms-2">Admin</span>
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-background-light dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-slate-800 dark:text-white">
+                    QrFlow Admin
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    System Management
+                </p>
+            </div>
+            <nav class="flex-1 px-4 py-2">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="dashboard.html">
+                    <span class="material-symbols-outlined text-2xl"> dashboard </span>
+                    <span>Dashboard</span>
                 </a>
-                
-                <div class="d-flex gap-3">
-                    <a href="dashboard.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
-                    <a href="clubs.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-building"></i> Clubs
-                    </a>
-                    <a href="users.html" class="btn btn-sm btn-primary">
-                        <i class="bi bi-people"></i> Users
-                    </a>
-                    <a href="logs.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-clock-history"></i> Logs
-                    </a>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="clubs.html">
+                    <span class="material-symbols-outlined text-2xl"> business </span>
+                    <span>Clubs</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary font-semibold" href="#">
+                    <span class="material-symbols-outlined text-2xl"> group </span>
+                    <span>Users</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="logs.html">
+                    <span class="material-symbols-outlined text-2xl"> history </span>
+                    <span>Logs</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="club-admin.html">
+                    <span class="material-symbols-outlined text-2xl"> admin_panel_settings </span>
+                    <span>Club Admin</span>
+                </a>
+            </nav>
+            <div class="p-4">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-2xl" id="darkModeIcon"> dark_mode </span>
+                    <span id="darkModeText">Dark Mode</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="logout()">
+                    <span class="material-symbols-outlined text-2xl"> logout </span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <header class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">
+                            User Management
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400">
+                            Manage all users in the system
+                        </p>
+                    </div>
+                    <button class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90" onclick="showCreateUserModal()">
+                        <span class="material-symbols-outlined text-lg mr-2"> add </span>
+                        Create User
+                    </button>
+                </div>
+            </header>
+
+            <!-- Search and Filters -->
+            <div class="mb-6">
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="searchInput" placeholder="Search users..." class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" onkeyup="searchUsers()">
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="roleFilter" class="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" onchange="filterUsers()">
+                                <option value="">All Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="organizer">Organizer</option>
+                            </select>
+                            <select id="statusFilter" class="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" onchange="filterUsers()">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
+                            <button onclick="clearFilters()" class="px-3 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
+                                <span class="material-symbols-outlined">clear</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Actions Bar -->
+            <div id="bulkActionsBar" class="mb-4 hidden">
+                <div class="bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span id="selectedCount" class="text-sm font-medium text-primary">0 users selected</span>
+                            <button onclick="bulkEnable()" class="text-sm px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-800">
+                                Enable Selected
+                            </button>
+                            <button onclick="bulkDisable()" class="text-sm px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-800">
+                                Disable Selected
+                            </button>
+                            <button onclick="bulkExport()" class="text-sm px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800">
+                                Export Selected
+                            </button>
+                        </div>
+                        <button onclick="clearSelection()" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+                            <span class="material-symbols-outlined">close</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#" onclick="Auth.logout(); return false;">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container-fluid mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>
-                <i class="bi bi-people"></i>
-                User Management
-            </h2>
-            <button class="btn btn-primary" onclick="showCreateModal()">
-                <i class="bi bi-person-plus"></i>
-                Create User
-            </button>
-        </div>
-
-        <!-- Filters -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Search by name or email...">
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" id="clubFilter">
-                            <option value="">All Clubs</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" id="roleFilter">
-                            <option value="">All Roles</option>
-                            <option value="admin">Admin</option>
-                            <option value="organizer">Organizer</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="statusFilter">
-                            <option value="">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="disabled">Disabled</option>
-                        </select>
+            <!-- Users Table -->
+            <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg">
+                <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+                            All Users
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="rounded border-slate-300">
+                            <label for="selectAll" class="text-sm text-slate-600 dark:text-slate-400">Select All</label>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Users Table -->
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800">
                             <tr>
-                                <th>Username</th>
-                                <th class="d-none d-md-table-cell">Full Name</th>
-                                <th class="d-none d-lg-table-cell">Email</th>
-                                <th>Club</th>
-                                <th>Role</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Actions</th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider w-12">
+                                    <input type="checkbox" id="selectAllHeader" onchange="toggleSelectAll()" class="rounded border-slate-300">
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    User
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Club
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Role
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
-                        <tbody id="usersTable">
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="usersTable">
                             <tr>
-                                <td colspan="7" class="text-center py-4">
-                                    <div class="spinner-border text-primary"></div>
-                                    <p class="mt-2 mb-0">Loading users...</p>
+                                <td colspan="6" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+                                    <div class="flex items-center justify-center">
+                                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                        <span class="ml-2">Loading users...</span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Create/Edit User Modal -->
-    <div class="modal fade" id="userModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Create User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="userForm">
-                    <div class="modal-body">
-                        <input type="hidden" id="userId">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username *</label>
-                            <input type="text" class="form-control" id="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3" id="passwordField">
-                            <label for="password" class="form-label">Password *</label>
-                            <input type="password" class="form-control" id="password" required>
-                            <small class="text-muted">Leave blank to keep current password (when editing)</small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fullName" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="fullName">
-                        </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Role *</label>
-                            <select class="form-select" id="role" required>
-                                <option value="">Select Role</option>
-                                <option value="admin">Admin</option>
-                                <option value="organizer">Organizer</option>
-                            </select>
-                        </div>
-                        <div class="mb-3" id="clubSelectField">
-                            <label for="clubSelect" class="form-label">Assign to Club</label>
-                            <select class="form-select" id="clubSelect">
-                                <option value="">No Club</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="saveBtn">
-                            <i class="bi bi-check-circle"></i> Save
-                        </button>
-                    </div>
-                </form>
+    <!-- Create User Modal -->
+    <div id="createUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Create New User</h3>
+                <button onclick="hideCreateUserModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirm Delete</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <form id="createUserForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Username</label>
+                    <input type="text" id="userUsername" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
                 </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete this user?</p>
-                    <p class="text-danger mb-0">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        This action cannot be undone!
-                    </p>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+                    <input type="text" id="userFullName" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
-                        <i class="bi bi-trash"></i> Delete
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                    <input type="email" id="userEmail" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Password</label>
+                    <input type="password" id="userPassword" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Role</label>
+                    <select id="userRole" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                        <option value="organizer">Organizer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Club</label>
+                    <select id="userClub" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                        <option value="">Select Club (Optional)</option>
+                    </select>
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90">
+                        Create User
+                    </button>
+                    <button type="button" onclick="hideCreateUserModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600">
+                        Cancel
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
     
     <script>
+        // Check authentication
         Auth.requireAuth();
-        const currentUser = Auth.getCurrentUser();
+        const user = Auth.getCurrentUser();
         
-        if (currentUser.role !== 'admin') {
+        if (user.role !== 'admin') {
             Utils.showToast('Access denied - Admin only', 'error');
             setTimeout(() => window.location.href = '../organizer/dashboard.html', 2000);
         }
 
-        let users = [];
-        let clubs = [];
-        let userModalInstance, deleteModalInstance;
-        let userToDelete = null;
+        let allUsers = [];
+        let filteredUsers = [];
+        let selectedUsers = new Set();
 
+        // Load users data
         document.addEventListener('DOMContentLoaded', async () => {
-            userModalInstance = new bootstrap.Modal(document.getElementById('userModal'));
-            deleteModalInstance = new bootstrap.Modal(document.getElementById('deleteModal'));
-            
+            initDarkMode();
             await loadClubs();
             await loadUsers();
-            setupFilters();
         });
 
         async function loadClubs() {
             try {
-                clubs = await api.get('/api/admin/clubs');
-                
-                // Populate club filters
-                const clubFilter = document.getElementById('clubFilter');
-                const clubSelect = document.getElementById('clubSelect');
+                const clubs = await api.get('/api/admin/clubs');
+                const clubSelect = document.getElementById('userClub');
                 
                 clubs.forEach(club => {
-                    clubFilter.innerHTML += `<option value="${club.id}">${club.name}</option>`;
-                    clubSelect.innerHTML += `<option value="${club.id}">${club.name}</option>`;
+                    const option = document.createElement('option');
+                    option.value = club.id;
+                    option.textContent = club.name;
+                    clubSelect.appendChild(option);
                 });
             } catch (error) {
                 console.error('Failed to load clubs:', error);
@@ -248,180 +305,325 @@
 
         async function loadUsers() {
             try {
-                users = await api.get('/api/admin/users');
-                renderUsers(users);
+                allUsers = await api.get('/api/admin/users');
+                filteredUsers = [...allUsers];
+                renderUsers();
             } catch (error) {
                 console.error('Failed to load users:', error);
-                Utils.showToast('Failed to load users', 'error');
                 document.getElementById('usersTable').innerHTML = 
-                    '<tr><td colspan="7" class="text-center text-danger">Failed to load users</td></tr>';
+                    '<tr><td colspan="7" class="px-6 py-4 text-center text-red-500">Failed to load users</td></tr>';
             }
         }
 
-        function renderUsers(usersToRender) {
+        async function renderUsers() {
             const tbody = document.getElementById('usersTable');
 
-            if (usersToRender.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No users found</td></tr>';
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No users found</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = usersToRender.map(user => {
-                const club = clubs.find(c => c.id === user.club_id);
-                const isCurrentUser = user.id === currentUser.id;
-                
-                return `
-                    <tr>
-                        <td>
-                            <strong>${user.username}</strong>
-                            ${isCurrentUser ? '<span class="badge badge-info ms-1">You</span>' : ''}
-                        </td>
-                        <td class="d-none d-md-table-cell">${user.full_name || '-'}</td>
-                        <td class="d-none d-lg-table-cell">${user.email}</td>
-                        <td>${club ? club.name : '-'}</td>
-                        <td>
-                            <span class="badge badge-${user.role === 'admin' ? 'danger' : 'primary'}">
-                                ${user.role}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            ${user.disabled 
-                                ? '<span class="badge badge-secondary">Disabled</span>' 
-                                : '<span class="badge badge-success">Active</span>'}
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-outline-primary" onclick="editUser(${user.id})" ${isCurrentUser ? 'disabled' : ''}>
-                                <i class="bi bi-pencil"></i>
+            tbody.innerHTML = filteredUsers.map(user => `
+                <tr class="user-row" data-user-id="${user.id}">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="checkbox" class="user-checkbox rounded border-slate-300" value="${user.id}" onchange="updateSelection()">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-slate-900 dark:text-white">${user.full_name || user.username}</div>
+                        <div class="text-sm text-slate-500 dark:text-slate-400">@${user.username}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                        ${user.email}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                        ${user.club_name || '-'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.role === 'admin' ? 'text-purple-600 bg-purple-100 dark:bg-purple-900 dark:text-purple-300' : 'text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-300'}">
+                            ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${!user.disabled ? 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300' : 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-300'}">
+                            ${!user.disabled ? 'Active' : 'Disabled'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex gap-2">
+                            <button onclick="editUser(${user.id})" class="text-primary hover:text-primary/80">
+                                Edit
                             </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${user.id})" ${isCurrentUser ? 'disabled' : ''}>
-                                <i class="bi bi-trash"></i>
+                            <button onclick="confirmToggleUserStatus(${user.id}, ${user.disabled}, '${user.username}')" class="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
+                                ${user.disabled ? 'Enable' : 'Disable'}
                             </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        function setupFilters() {
-            ['searchInput', 'clubFilter', 'roleFilter', 'statusFilter'].forEach(id => {
-                document.getElementById(id).addEventListener('input', filterUsers);
-            });
+        // Modal functions
+        function showCreateUserModal() {
+            document.getElementById('createUserModal').classList.remove('hidden');
+            document.getElementById('createUserModal').classList.add('flex');
+        }
+
+        function hideCreateUserModal() {
+            document.getElementById('createUserModal').classList.add('hidden');
+            document.getElementById('createUserModal').classList.remove('flex');
+        }
+
+        // User form submission
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                username: document.getElementById('userUsername').value,
+                full_name: document.getElementById('userFullName').value,
+                email: document.getElementById('userEmail').value,
+                password: document.getElementById('userPassword').value,
+                role: document.getElementById('userRole').value,
+                club_id: document.getElementById('userClub').value || null
+            };
+
+            try {
+                await api.post('/api/admin/users', formData);
+                Utils.showToast('User created successfully', 'success');
+                hideCreateUserModal();
+                await loadUsers();
+            } catch (error) {
+                Utils.showToast('Failed to create user', 'error');
+            }
+        });
+
+        // Enhanced functionality
+        function searchUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredUsers = allUsers.filter(user => 
+                user.username.toLowerCase().includes(searchTerm) ||
+                (user.full_name && user.full_name.toLowerCase().includes(searchTerm)) ||
+                user.email.toLowerCase().includes(searchTerm) ||
+                (user.club_name && user.club_name.toLowerCase().includes(searchTerm))
+            );
+            renderUsers();
         }
 
         function filterUsers() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const clubId = document.getElementById('clubFilter').value;
-            const role = document.getElementById('roleFilter').value;
-            const status = document.getElementById('statusFilter').value;
-
-            const filtered = users.filter(user => {
-                const matchSearch = !search || 
-                    user.username.toLowerCase().includes(search) ||
-                    user.email.toLowerCase().includes(search) ||
-                    (user.full_name && user.full_name.toLowerCase().includes(search));
-                
-                const matchClub = !clubId || user.club_id == clubId;
-                const matchRole = !role || user.role === role;
-                const matchStatus = !status || 
-                    (status === 'active' && !user.disabled) ||
-                    (status === 'disabled' && user.disabled);
-
-                return matchSearch && matchClub && matchRole && matchStatus;
-            });
-
-            renderUsers(filtered);
-        }
-
-        function showCreateModal() {
-            document.getElementById('modalTitle').textContent = 'Create User';
-            document.getElementById('userForm').reset();
-            document.getElementById('userId').value = '';
-            document.getElementById('password').required = true;
-            userModalInstance.show();
-        }
-
-        async function editUser(userId) {
-            const user = users.find(u => u.id === userId);
-            if (!user) return;
-
-            document.getElementById('modalTitle').textContent = 'Edit User';
-            document.getElementById('userId').value = user.id;
-            document.getElementById('username').value = user.username;
-            document.getElementById('email').value = user.email;
-            document.getElementById('password').value = '';
-            document.getElementById('password').required = false;
-            document.getElementById('fullName').value = user.full_name || '';
-            document.getElementById('role').value = user.role;
-            document.getElementById('clubSelect').value = user.club_id || '';
+            const roleFilter = document.getElementById('roleFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
-            userModalInstance.show();
+            filteredUsers = allUsers.filter(user => {
+                const matchesSearch = user.username.toLowerCase().includes(searchTerm) ||
+                    (user.full_name && user.full_name.toLowerCase().includes(searchTerm)) ||
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    (user.club_name && user.club_name.toLowerCase().includes(searchTerm));
+                
+                const matchesRole = !roleFilter || user.role === roleFilter;
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'active' && !user.disabled) ||
+                    (statusFilter === 'disabled' && user.disabled);
+                
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+            renderUsers();
         }
 
-        document.getElementById('userForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('roleFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filteredUsers = [...allUsers];
+            renderUsers();
+        }
 
-            const saveBtn = document.getElementById('saveBtn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
-
-            const userId = document.getElementById('userId').value;
-            const userData = {
-                username: document.getElementById('username').value,
-                email: document.getElementById('email').value,
-                full_name: document.getElementById('fullName').value,
-                role: document.getElementById('role').value,
-                club_id: document.getElementById('clubSelect').value ? parseInt(document.getElementById('clubSelect').value) : null
-            };
-
-            const password = document.getElementById('password').value;
-            if (password) {
-                userData.password = password;
-            }
-
-            try {
-                if (userId) {
-                    await api.put(`/api/admin/users/${userId}`, userData);
-                    Utils.showToast('User updated successfully', 'success');
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAllHeader');
+            const checkboxes = document.querySelectorAll('.user-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+                if (selectAll.checked) {
+                    selectedUsers.add(checkbox.value);
                 } else {
-                    await api.post('/api/admin/users', userData);
-                    Utils.showToast('User created successfully', 'success');
+                    selectedUsers.delete(checkbox.value);
                 }
-
-                userModalInstance.hide();
-                await loadUsers();
-            } catch (error) {
-                Utils.showToast(error.message || 'Operation failed', 'error');
-            } finally {
-                saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="bi bi-check-circle"></i> Save';
-            }
-        });
-
-        function confirmDelete(userId) {
-            userToDelete = userId;
-            deleteModalInstance.show();
+            });
+            
+            updateBulkActionsBar();
         }
 
-        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-            if (!userToDelete) return;
+        function updateSelection() {
+            const checkboxes = document.querySelectorAll('.user-checkbox');
+            selectedUsers.clear();
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedUsers.add(checkbox.value);
+                }
+            });
+            
+            // Update select all checkbox
+            const selectAll = document.getElementById('selectAllHeader');
+            selectAll.checked = selectedUsers.size === checkboxes.length && checkboxes.length > 0;
+            selectAll.indeterminate = selectedUsers.size > 0 && selectedUsers.size < checkboxes.length;
+            
+            updateBulkActionsBar();
+        }
 
-            const btn = document.getElementById('confirmDeleteBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Deleting...';
+        function updateBulkActionsBar() {
+            const bulkBar = document.getElementById('bulkActionsBar');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            if (selectedUsers.size > 0) {
+                bulkBar.classList.remove('hidden');
+                selectedCount.textContent = `${selectedUsers.size} user${selectedUsers.size > 1 ? 's' : ''} selected`;
+            } else {
+                bulkBar.classList.add('hidden');
+            }
+        }
 
+        function clearSelection() {
+            selectedUsers.clear();
+            document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('selectAllHeader').checked = false;
+            document.getElementById('selectAllHeader').indeterminate = false;
+            updateBulkActionsBar();
+        }
+
+        async function bulkEnable() {
+            if (selectedUsers.size === 0) return;
+            
+            const confirmed = confirm(`Are you sure you want to enable ${selectedUsers.size} user(s)?`);
+            if (!confirmed) return;
+            
             try {
-                await api.delete(`/api/admin/users/${userToDelete}`);
-                Utils.showToast('User deleted successfully', 'success');
-                deleteModalInstance.hide();
+                for (const userId of selectedUsers) {
+                    await api.post(`/api/admin/users/${userId}/enable`);
+                }
+                Utils.showToast(`${selectedUsers.size} user(s) enabled successfully`, 'success');
+                clearSelection();
                 await loadUsers();
             } catch (error) {
-                Utils.showToast(error.message || 'Delete failed', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-trash"></i> Delete';
-                userToDelete = null;
+                Utils.showToast('Failed to enable some users', 'error');
             }
-        });
+        }
+
+        async function bulkDisable() {
+            if (selectedUsers.size === 0) return;
+            
+            const confirmed = confirm(`Are you sure you want to disable ${selectedUsers.size} user(s)?`);
+            if (!confirmed) return;
+            
+            try {
+                for (const userId of selectedUsers) {
+                    await api.delete(`/api/admin/users/${userId}`);
+                }
+                Utils.showToast(`${selectedUsers.size} user(s) disabled successfully`, 'success');
+                clearSelection();
+                await loadUsers();
+            } catch (error) {
+                Utils.showToast('Failed to disable some users', 'error');
+            }
+        }
+
+        function bulkExport() {
+            if (selectedUsers.size === 0) return;
+            
+            const selectedUsersData = allUsers.filter(user => selectedUsers.has(user.id.toString()));
+            const csvContent = generateUsersCSV(selectedUsersData);
+            downloadCSV(csvContent, 'users-export.csv');
+            Utils.showToast('Users exported successfully', 'success');
+        }
+
+        function generateUsersCSV(users) {
+            const headers = ['Username', 'Full Name', 'Email', 'Club', 'Role', 'Status', 'Created At'];
+            const rows = users.map(user => [
+                user.username,
+                user.full_name || '',
+                user.email,
+                user.club_name || '',
+                user.role,
+                user.disabled ? 'Disabled' : 'Active',
+                new Date(user.created_at).toLocaleDateString()
+            ]);
+            
+            return [headers, ...rows].map(row => 
+                row.map(field => `"${field.toString().replace(/"/g, '""')}"`).join(',')
+            ).join('\n');
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // User management functions
+        function editUser(userId) {
+            Utils.showToast('Edit user functionality coming soon', 'info');
+        }
+
+        async function confirmToggleUserStatus(userId, currentStatus, username) {
+            const action = currentStatus ? 'enable' : 'disable';
+            const confirmed = confirm(`Are you sure you want to ${action} user "${username}"?`);
+            if (!confirmed) return;
+            
+            await toggleUserStatus(userId, currentStatus);
+        }
+
+        async function toggleUserStatus(userId, currentStatus) {
+            try {
+                if (currentStatus) {
+                    // Enable user
+                    await api.post(`/api/admin/users/${userId}/enable`);
+                    Utils.showToast('User enabled successfully', 'success');
+                } else {
+                    // Disable user
+                    await api.delete(`/api/admin/users/${userId}`);
+                    Utils.showToast('User disabled successfully', 'success');
+                }
+                await loadUsers();
+            } catch (error) {
+                Utils.showToast('Failed to update user status', 'error');
+            }
+        }
+
+        function logout() {
+            Auth.logout();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('darkModeIcon').textContent = 'dark_mode';
+                document.getElementById('darkModeText').textContent = 'Dark Mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
     </script>
 </body>
 </html>

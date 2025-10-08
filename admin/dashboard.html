@@ -1,217 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Admin Dashboard - QrFlow</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../assets/css/qrflow.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="../assets/css/qrflow.css" rel="stylesheet"/>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="qrflow-navbar">
-        <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center">
-                <a href="dashboard.html" class="qrflow-logo">
-                    <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
-                    <span>QrFlow</span>
-                    <span class="badge badge-danger ms-2">Admin</span>
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-background-light dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-slate-800 dark:text-white">
+                    QrFlow Admin
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    System Management
+                </p>
+            </div>
+            <nav class="flex-1 px-4 py-2">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary font-semibold" href="#">
+                    <span class="material-symbols-outlined text-2xl"> dashboard </span>
+                    <span>Dashboard</span>
                 </a>
-                
-                <div class="d-flex gap-3">
-                    <a href="dashboard.html" class="btn btn-sm btn-primary">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
-                    <a href="clubs.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-building"></i> Clubs
-                    </a>
-                    <a href="users.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-people"></i> Users
-                    </a>
-                    <a href="logs.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-clock-history"></i> Logs
-                    </a>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#" onclick="Auth.logout(); return false;">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </a></li>
-                        </ul>
-                    </div>
-                </div>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="clubs.html">
+                    <span class="material-symbols-outlined text-2xl"> business </span>
+                    <span>Clubs</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="users.html">
+                    <span class="material-symbols-outlined text-2xl"> group </span>
+                    <span>Users</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="logs.html">
+                    <span class="material-symbols-outlined text-2xl"> history </span>
+                    <span>Logs</span>
+                </a>
+            </nav>
+            <div class="p-4">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-2xl" id="darkModeIcon"> dark_mode </span>
+                    <span id="darkModeText">Dark Mode</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="logout()">
+                    <span class="material-symbols-outlined text-2xl"> logout </span>
+                    <span>Logout</span>
+                </a>
             </div>
-        </div>
-    </nav>
+        </aside>
 
-    <!-- Main Content -->
-    <div class="container-fluid mt-4">
-        <h2 class="mb-4">
-            <i class="bi bi-speedometer2"></i>
-            System Overview
-        </h2>
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white">
+                    System Overview
+                </h2>
+                <p class="text-slate-500 dark:text-slate-400">
+                    Monitor system performance and activities
+                </p>
+            </header>
 
-        <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-primary" id="totalClubs">0</div>
-                        <div class="stat-card-label">Total Clubs</div>
-                    </div>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Total Clubs
+                    </p>
+                    <p class="text-4xl font-bold text-slate-900 dark:text-white" id="totalClubs">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Total Users
+                    </p>
+                    <p class="text-4xl font-bold text-slate-900 dark:text-white" id="totalUsers">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Total Events
+                    </p>
+                    <p class="text-4xl font-bold text-slate-900 dark:text-white" id="totalEvents">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Active Events
+                    </p>
+                    <p class="text-4xl font-bold text-slate-900 dark:text-white" id="activeEvents">
+                        0
+                    </p>
                 </div>
             </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-success" id="totalUsers">0</div>
-                        <div class="stat-card-label">Total Users</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-info" id="totalEvents">0</div>
-                        <div class="stat-card-label">Total Events</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-warning" id="activeEvents">0</div>
-                        <div class="stat-card-label">Active Events</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-<!-- Quick Actions & System Information -->
-<div class="row mb-4">
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="bi bi-lightning-charge"></i>
+            <!-- Quick Actions -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
                     Quick Actions
-                </h5>
-                <div class="d-grid gap-2">
-                    <button class="btn btn-primary" onclick="window.location.href='clubs.html'">
-                        <i class="bi bi-plus-circle"></i> Create New Club
+                </h3>
+                <div class="flex flex-wrap gap-4">
+                    <button class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90" onclick="window.location.href='clubs.html'">
+                        <span class="material-symbols-outlined text-lg mr-2"> add </span>
+                        Create New Club
                     </button>
-                    <button class="btn btn-secondary" onclick="window.location.href='users.html'">
-                        <i class="bi bi-person-plus"></i> Create New User
+                    <button class="flex items-center justify-center rounded-lg h-10 px-6 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-white text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700" onclick="window.location.href='users.html'">
+                        <span class="material-symbols-outlined text-lg mr-2"> person_add </span>
+                        Create New User
                     </button>
-                    <button class="btn btn-success" onclick="window.location.href='../organizer/dashboard.html'">
-                        <i class="bi bi-calendar-event"></i> View All Events
+                    <button class="flex items-center justify-center rounded-lg h-10 px-6 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-white text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700" onclick="window.location.href='../organizer/dashboard.html'">
+                        <span class="material-symbols-outlined text-lg mr-2"> event </span>
+                        View All Events
                     </button>
-                    <button class="btn btn-info" onclick="window.location.href='logs.html'">
-                        <i class="bi bi-clock-history"></i> View Activity Logs
+                    <button class="flex items-center justify-center rounded-lg h-10 px-6 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-white text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700" onclick="window.location.href='logs.html'">
+                        <span class="material-symbols-outlined text-lg mr-2"> history </span>
+                        View Activity Logs
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="bi bi-info-circle"></i>
-                    System Information
-                </h5>
-                <div class="mb-2">
-                    <strong>Application:</strong> QrFlow v1.0.0
-                </div>
-                <div class="mb-2">
-                    <strong>Environment:</strong> <span class="badge badge-warning">Development</span>
-                </div>
-                <div class="mb-2">
-                    <strong>Database:</strong> <span class="badge badge-success" id="dbStatus">Connected</span>
-                </div>
-                <div>
-                    <strong>Last Login:</strong> <span id="lastLogin">Just now</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-        <!-- Recent Clubs -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">
-                                <i class="bi bi-building"></i>
-                                Recent Clubs
-                            </h5>
-                            <a href="clubs.html" class="btn btn-sm btn-outline-primary">View All</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Club Name</th>
-                                        <th>Email</th>
-                                        <th class="d-none d-md-table-cell">Phone</th>
-                                        <th class="text-center">Members</th>
-                                        <th class="text-center">Events</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recentClubsTable">
-                                    <tr>
-                                        <td colspan="5" class="text-center">
-                                            <div class="spinner-border spinner-border-sm"></div>
-                                            Loading...
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <!-- Recent Clubs -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Recent Clubs
+                </h3>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Club Name
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Members
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Events
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="recentClubsTable">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+                                        <div class="flex items-center justify-center">
+                                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                            <span class="ml-2">Loading clubs...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Recent Activity -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">
-                                <i class="bi bi-activity"></i>
-                                Recent Activity
-                            </h5>
-                            <a href="logs.html" class="btn btn-sm btn-outline-primary">View All</a>
-                        </div>
-                        <div id="recentActivityList">
-                            <div class="text-center py-3">
-                                <div class="spinner-border spinner-border-sm"></div>
-                                Loading activity...
-                            </div>
-                        </div>
+            <!-- Recent Activity -->
+            <div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Recent Activity
+                </h3>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        User
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Action
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Date
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Details
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="recentActivityList">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+                                        <div class="flex items-center justify-center">
+                                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                            <span class="ml-2">Loading activity...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
     
     <script>
+        // Check authentication
         Auth.requireAuth();
         const user = Auth.getCurrentUser();
         
@@ -220,7 +252,9 @@
             setTimeout(() => window.location.href = '../organizer/dashboard.html', 2000);
         }
 
+        // Load dashboard data
         document.addEventListener('DOMContentLoaded', async () => {
+            initDarkMode();
             await loadDashboardStats();
             await loadRecentClubs();
             await loadRecentActivity();
@@ -243,6 +277,7 @@
                 document.getElementById('activeEvents').textContent = activeEvents.length;
             } catch (error) {
                 console.error('Failed to load stats:', error);
+                Utils.showToast('Failed to load dashboard data', 'error');
             }
         }
 
@@ -250,11 +285,10 @@
             try {
                 const clubs = await api.get('/api/admin/clubs');
                 const recentClubs = clubs.slice(0, 5);
-
                 const tbody = document.getElementById('recentClubsTable');
                 
                 if (recentClubs.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No clubs yet</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No clubs yet</td></tr>';
                     return;
                 }
 
@@ -267,44 +301,63 @@
 
                     tbody.innerHTML += `
                         <tr>
-                            <td><strong>${club.name}</strong></td>
-                            <td>${club.email || '-'}</td>
-                            <td class="d-none d-md-table-cell">${club.phone || '-'}</td>
-                            <td class="text-center"><span class="badge badge-primary">${users.length}</span></td>
-                            <td class="text-center"><span class="badge badge-info">${clubEvents.length}</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-slate-900 dark:text-white">${club.name}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                ${club.email || '-'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                ${users.length}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                ${clubEvents.length}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${club.active ? 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300' : 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-300'}">
+                                    ${club.active ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
                         </tr>
                     `;
                 }
             } catch (error) {
                 console.error('Failed to load clubs:', error);
                 document.getElementById('recentClubsTable').innerHTML = 
-                    '<tr><td colspan="5" class="text-center text-danger">Failed to load clubs</td></tr>';
+                    '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Failed to load clubs</td></tr>';
             }
         }
 
         async function loadRecentActivity() {
             try {
                 const logs = await api.get('/api/admin/logs?skip=0&limit=10');
-                const container = document.getElementById('recentActivityList');
+                const tbody = document.getElementById('recentActivityList');
 
                 if (logs.length === 0) {
-                    container.innerHTML = '<p class="text-center text-muted py-3">No recent activity</p>';
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No recent activity</td></tr>';
                     return;
                 }
 
-                container.innerHTML = logs.map(log => `
-                    <div class="d-flex justify-content-between align-items-start py-2 border-bottom">
-                        <div>
-                            <div class="fw-bold">${log.user_name || 'Unknown'}</div>
-                            <small class="text-muted">${log.description}</small>
-                        </div>
-                        <small class="text-muted">${Utils.formatTime(log.timestamp)}</small>
-                    </div>
+                tbody.innerHTML = logs.map(log => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">
+                            ${log.user_name || 'Unknown'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${log.action_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${Utils.formatTime(log.timestamp)}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${log.description}
+                        </td>
+                    </tr>
                 `).join('');
             } catch (error) {
                 console.error('Failed to load activity:', error);
                 document.getElementById('recentActivityList').innerHTML = 
-                    '<p class="text-center text-danger">Failed to load activity</p>';
+                    '<tr><td colspan="4" class="px-6 py-4 text-center text-red-500">Failed to load activity</td></tr>';
             }
         }
 
@@ -312,15 +365,42 @@
             try {
                 const health = await api.get('/health');
                 if (health.status === 'healthy') {
-                    document.getElementById('dbStatus').textContent = 'Connected';
-                    document.getElementById('dbStatus').className = 'badge badge-success';
+                    console.log('Database: Connected');
                 } else {
-                    document.getElementById('dbStatus').textContent = 'Issues Detected';
-                    document.getElementById('dbStatus').className = 'badge badge-warning';
+                    console.log('Database: Issues Detected');
                 }
             } catch (error) {
-                document.getElementById('dbStatus').textContent = 'Disconnected';
-                document.getElementById('dbStatus').className = 'badge badge-danger';
+                console.log('Database: Disconnected');
+            }
+        }
+
+        function logout() {
+            Auth.logout();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('darkModeIcon').textContent = 'dark_mode';
+                document.getElementById('darkModeText').textContent = 'Dark Mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
             }
         }
     </script>

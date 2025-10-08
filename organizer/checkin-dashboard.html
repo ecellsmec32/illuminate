@@ -1,15 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Check-in Dashboard - QrFlow</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../assets/css/qrflow.css" rel="stylesheet">
-    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
     <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
         .live-indicator {
             display: inline-flex;
             align-items: center;
@@ -17,437 +42,564 @@
             background: rgba(16, 185, 129, 0.1);
             padding: 0.5rem 1rem;
             border-radius: 50px;
-            color: var(--secondary);
+            color: #10b981;
             font-weight: 600;
         }
-        
         .live-dot {
             width: 8px;
             height: 8px;
-            background: var(--secondary);
+            background: #10b981;
             border-radius: 50%;
             animation: blink 2s infinite;
         }
-        
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
-        
-        .stat-card {
-            transition: var(--transition);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-        }
-        
-        .accordion-button:not(.collapsed) {
-            background-color: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-        }
-        
-        .attendee-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-            transition: var(--transition);
-        }
-        
-        .attendee-item:hover {
-            background-color: var(--bg-light);
-        }
-        
-        .attendee-item:last-child {
-            border-bottom: none;
-        }
-        
-        .attendee-status-icon {
-            font-size: 1.25rem;
-        }
-        
-        .progress-ring {
-            position: relative;
-            width: 120px;
-            height: 120px;
-        }
-        
-        .progress-ring-circle {
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-        
-        .filter-pills {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .filter-pill {
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            border: 2px solid var(--border-color);
-            background: white;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.9rem;
-        }
-        
-        .filter-pill.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .filter-pill:hover {
-            border-color: var(--primary);
-        }
-        
-        @media (max-width: 767px) {
-            .stat-card-value {
-                font-size: 2rem;
-            }
-        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="../assets/css/qrflow.css" rel="stylesheet"/>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="qrflow-navbar">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-3">
-                    <a href="event-details.html" class="btn btn-sm btn-outline-primary" id="backBtn">
-                        <i class="bi bi-arrow-left"></i>
-                        <span class="d-none d-md-inline">Back</span>
-                    </a>
-                    <a href="dashboard.html" class="qrflow-logo">
-                        <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
-                        <span>QrFlow</span>
-                    </a>
-                </div>
-                <div class="live-indicator">
-                    <div class="live-dot"></div>
-                    <span>Live</span>
-                </div>
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-background-light dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-slate-800 dark:text-white">
+                    <span id="clubName">Loading...</span>
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Check-in Management
+                </p>
             </div>
-        </div>
-    </nav>
+            <nav class="flex-1 px-4 py-2">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="dashboard.html">
+                    <span class="material-symbols-outlined text-2xl"> event </span>
+                    <span>Events</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary font-semibold" href="#">
+                    <span class="material-symbols-outlined text-2xl"> qr_code_scanner </span>
+                    <span>Check-in</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="scanner.html">
+                    <span class="material-symbols-outlined text-2xl"> qr_code </span>
+                    <span>Scanner</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="../admin/club-admin.html">
+                    <span class="material-symbols-outlined text-2xl"> dashboard </span>
+                    <span>Club Admin</span>
+                </a>
+            </nav>
+            <div class="p-4">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-2xl" id="darkModeIcon"> dark_mode </span>
+                    <span id="darkModeText">Dark Mode</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="logout()">
+                    <span class="material-symbols-outlined text-2xl"> logout </span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
 
-    <!-- Main Content -->
-    <div class="container mt-4">
-        <!-- Event Header -->
-        <div class="mb-4">
-            <h3 class="mb-2" id="eventName">Loading...</h3>
-            <p class="text-muted mb-0">
-                <i class="bi bi-calendar3"></i> <span id="eventDate"></span>
-                <span class="ms-3"><i class="bi bi-geo-alt"></i> <span id="eventVenue"></span></span>
-            </p>
-            <small class="text-muted">Auto-refreshes every 5 seconds</small>
-        </div>
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <header class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">
+                            Check-in Dashboard
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400">
+                            Monitor event check-ins in real-time
+                        </p>
+                    </div>
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        <span>LIVE</span>
+                    </div>
+                </div>
+            </header>
 
-        <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value" id="totalStat">0</div>
-                        <div class="stat-card-label">Total Registered</div>
+            <!-- Event Selector -->
+            <div class="mb-8">
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Select Event</h3>
+                    <div class="flex gap-4">
+                        <select id="eventSelector" class="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" onchange="loadEventData()">
+                            <option value="">Choose an event...</option>
+                        </select>
+                        <button onclick="refreshEvents()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                            <span class="material-symbols-outlined">refresh</span>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-success" id="checkedInStat">0</div>
-                        <div class="stat-card-label">Checked In</div>
-                        <div class="progress mt-2">
-                            <div class="progress-bar bg-success" id="checkedInProgress" style="width: 0%"></div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Total Attendees
+                    </p>
+                    <p class="text-4xl font-bold text-slate-900 dark:text-white" id="totalAttendees">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Checked In
+                    </p>
+                    <p class="text-4xl font-bold text-green-600" id="checkedIn">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Pending
+                    </p>
+                    <p class="text-4xl font-bold text-yellow-600" id="pending">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Check-in Rate
+                    </p>
+                    <p class="text-4xl font-bold text-primary" id="checkinRate">
+                        0%
+                    </p>
+                </div>
+            </div>
+
+            <!-- Recent Check-ins -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Recent Check-ins
+                </h3>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg">
+                    <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-lg font-semibold text-slate-900 dark:text-white">
+                                Live Activity
+                            </h4>
+                            <button onclick="refreshCheckins()" class="text-sm px-3 py-1 bg-primary text-white rounded hover:bg-primary/90">
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="max-h-96 overflow-y-auto" id="recentCheckins">
+                        <div class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+                            <div class="flex items-center justify-center">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                <span class="ml-2">Loading check-ins...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-warning" id="pendingStat">0</div>
-                        <div class="stat-card-label">Not Checked In</div>
+
+            <!-- Manual Check-in -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Manual Check-in
+                </h3>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <div class="flex gap-4">
+                        <input type="text" id="manualCheckinInput" placeholder="Enter attendee name, email, or roll number..." class="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                        <button onclick="performManualCheckin()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                            Check In
+                        </button>
+                    </div>
+                    <div id="manualCheckinResults" class="mt-4 hidden">
+                        <!-- Results will be displayed here -->
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-primary" id="percentageStat">0%</div>
-                        <div class="stat-card-label">Attendance Rate</div>
+
+            <!-- Export Options -->
+            <div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Export Data
+                </h3>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <div class="flex gap-4">
+                        <button onclick="exportAttendees()" class="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-800">
+                            <span class="material-symbols-outlined">download</span>
+                            Export Attendees
+                        </button>
+                        <button onclick="exportCheckins()" class="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800">
+                            <span class="material-symbols-outlined">download</span>
+                            Export Check-ins
+                        </button>
+                        <button onclick="exportReport()" class="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800">
+                            <span class="material-symbols-outlined">assessment</span>
+                            Generate Report
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Filters -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h6 class="mb-3">Filter Attendees</h6>
-                <div class="filter-pills">
-                    <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">
-                        All <span class="badge bg-secondary ms-1" id="filterAllCount">0</span>
-                    </button>
-                    <button class="filter-pill" data-filter="checked_in" onclick="setFilter('checked_in')">
-                        Checked In <span class="badge bg-success ms-1" id="filterCheckedCount">0</span>
-                    </button>
-                    <button class="filter-pill" data-filter="pending" onclick="setFilter('pending')">
-                        Pending <span class="badge bg-warning ms-1" id="filterPendingCount">0</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Segregated Attendees (Branch → Year → Section) -->
-        <div class="card">
-            <div class="card-body">
-                <h5 class="mb-3">
-                    <i class="bi bi-diagram-3"></i>
-                    Attendees by Branch, Year & Section
-                </h5>
-                
-                <div id="loadingState" class="text-center py-4">
-                    <div class="spinner-border text-primary"></div>
-                    <p class="mt-2 mb-0">Loading dashboard...</p>
-                </div>
-
-                <div id="segregatedView" class="accordion" style="display: none;">
-                    <!-- Dynamically populated -->
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/message-display.js"></script>
     
     <script>
+        // Check authentication
         Auth.requireAuth();
+        const user = Auth.getCurrentUser();
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const eventId = urlParams.get('id');
-        
-        if (!eventId) {
-            window.location.href = 'dashboard.html';
+        if (user.role !== 'organizer') {
+            Utils.showToast('Access denied - Club organizer only', 'error');
+            setTimeout(() => window.location.href = '../index.html', 2000);
         }
-        
-        let dashboardData = null;
-        let currentFilter = 'all';
-        let refreshInterval = null;
-        
-        // Update back button URL
-        document.getElementById('backBtn').href = `event-details.html?id=${eventId}`;
-        
+
+        let currentEventId = null;
+        let checkinInterval = null;
+
+        // Load dashboard data
         document.addEventListener('DOMContentLoaded', async () => {
-            await loadDashboard();
-            
-            // Start auto-refresh every 5 seconds
-            refreshInterval = setInterval(async () => {
-                await loadDashboard(true);
-            }, 5000);
+            initDarkMode();
+            await loadClubInfo();
+            await loadEvents();
         });
-        
-        // Clear interval on page unload
-        window.addEventListener('beforeunload', () => {
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-        });
-        
-        async function loadDashboard(silent = false) {
+
+        async function loadClubInfo() {
             try {
-                dashboardData = await api.get(`/api/events/${eventId}/dashboard`);
-                
-                if (!silent) {
-                    document.getElementById('loadingState').style.display = 'none';
-                    document.getElementById('segregatedView').style.display = 'block';
-                }
-                
-                updateEventInfo();
-                updateStats();
-                renderSegregatedView();
+                const club = await api.get('/api/club/info');
+                document.getElementById('clubName').textContent = club.name;
             } catch (error) {
-                console.error('Failed to load dashboard:', error);
-                if (!silent) {
-                    Utils.showToast('Failed to load dashboard', 'error');
-                }
+                console.error('Failed to load club info:', error);
             }
         }
-        
-        function updateEventInfo() {
-            document.getElementById('eventName').textContent = dashboardData.event.name;
-            document.getElementById('eventDate').textContent = Utils.formatDate(dashboardData.event.date);
-            document.getElementById('eventVenue').textContent = dashboardData.event.venue || 'TBA';
+
+        async function loadEvents() {
+            try {
+                const events = await api.get('/api/club/events');
+                const eventSelector = document.getElementById('eventSelector');
+                
+                eventSelector.innerHTML = '<option value="">Choose an event...</option>';
+                events.forEach(event => {
+                    const option = document.createElement('option');
+                    option.value = event.id;
+                    option.textContent = `${event.name} - ${new Date(event.date).toLocaleDateString()}`;
+                    eventSelector.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load events:', error);
+                Utils.showToast('Failed to load events', 'error');
+            }
         }
-        
-        function updateStats() {
-            const stats = dashboardData.stats;
-            const percentage = Utils.calculatePercentage(stats.checked_in, stats.total_attendees);
-            
-            document.getElementById('totalStat').textContent = stats.total_attendees;
-            document.getElementById('checkedInStat').textContent = stats.checked_in;
-            document.getElementById('pendingStat').textContent = stats.not_checked_in;
-            document.getElementById('percentageStat').textContent = percentage + '%';
-            document.getElementById('checkedInProgress').style.width = percentage + '%';
-            
-            // Update filter counts
-            document.getElementById('filterAllCount').textContent = stats.total_attendees;
-            document.getElementById('filterCheckedCount').textContent = stats.checked_in;
-            document.getElementById('filterPendingCount').textContent = stats.not_checked_in;
-        }
-        
-        function renderSegregatedView() {
-            const container = document.getElementById('segregatedView');
-            container.innerHTML = '';
-            
-            const groups = dashboardData.groups;
-            const branches = Object.keys(groups).sort();
-            
-            if (branches.length === 0) {
-                container.innerHTML = '<p class="text-center text-muted py-4">No attendees found</p>';
+
+        async function loadEventData() {
+            const eventId = document.getElementById('eventSelector').value;
+            if (!eventId) {
+                currentEventId = null;
+                clearStats();
                 return;
             }
+
+            currentEventId = eventId;
+            await updateEventStats();
+            await loadRecentCheckins();
             
-            branches.forEach((branch, branchIndex) => {
-                const branchData = groups[branch];
-                const branchId = `branch-${branchIndex}`;
-                
-                const branchHtml = `
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${branchId}">
-                                <strong>${branch}</strong>
-                                <span class="ms-2 badge badge-primary">${branchData.total}</span>
-                                <span class="ms-2 text-success">
-                                    <i class="bi bi-check-circle-fill"></i> ${branchData.checked_in}
-                                </span>
-                            </button>
-                        </h2>
-                        <div id="${branchId}" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                ${renderYears(branchData.years, branchId)}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                container.innerHTML += branchHtml;
-            });
+            // Start auto-refresh
+            if (checkinInterval) clearInterval(checkinInterval);
+            checkinInterval = setInterval(updateEventStats, 5000); // Refresh every 5 seconds
         }
-        
-        function renderYears(years, parentId) {
-            const yearKeys = Object.keys(years).sort();
-            
-            return yearKeys.map((year, yearIndex) => {
-                const yearData = years[year];
-                const yearId = `${parentId}-year-${yearIndex}`;
-                
-                return `
-                    <div class="accordion accordion-flush mb-2">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${yearId}">
-                                    Year ${year}
-                                    <span class="ms-2 badge badge-secondary">${yearData.total}</span>
-                                    <span class="ms-2 text-success">
-                                        <i class="bi bi-check-circle-fill"></i> ${yearData.checked_in}
-                                    </span>
-                                </button>
-                            </h2>
-                            <div id="${yearId}" class="accordion-collapse collapse">
-                                <div class="accordion-body">
-                                    ${renderSections(yearData.sections)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function renderSections(sections) {
-            const sectionKeys = Object.keys(sections).sort();
-            
-            return sectionKeys.map(section => {
-                const sectionData = sections[section];
-                
-                return `
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <strong>Section ${section}</strong>
-                            <div>
-                                <span class="badge badge-secondary">${sectionData.total}</span>
-                                <span class="badge badge-success ms-1">${sectionData.checked_in} checked in</span>
-                            </div>
-                        </div>
-                        ${renderAttendees(sectionData.attendees)}
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function renderAttendees(attendees) {
-            const filtered = filterAttendees(attendees);
-            
-            if (filtered.length === 0) {
-                return '<p class="text-muted text-center py-2 mb-0">No attendees match the filter</p>';
+
+        async function updateEventStats() {
+            if (!currentEventId) return;
+
+            try {
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const totalAttendees = attendees.length;
+                const checkedIn = attendees.filter(a => a.checked_in).length;
+                const pending = totalAttendees - checkedIn;
+                const checkinRate = totalAttendees > 0 ? Math.round((checkedIn / totalAttendees) * 100) : 0;
+
+                document.getElementById('totalAttendees').textContent = totalAttendees;
+                document.getElementById('checkedIn').textContent = checkedIn;
+                document.getElementById('pending').textContent = pending;
+                document.getElementById('checkinRate').textContent = `${checkinRate}%`;
+            } catch (error) {
+                console.error('Failed to update event stats:', error);
             }
-            
-            return `
-                <div class="border rounded">
-                    ${filtered.map(attendee => `
-                        <div class="attendee-item">
+        }
+
+        async function loadRecentCheckins() {
+            if (!currentEventId) return;
+
+            try {
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const recentCheckins = attendees
+                    .filter(a => a.checked_in)
+                    .sort((a, b) => new Date(b.checkin_time) - new Date(a.checkin_time))
+                    .slice(0, 10);
+
+                const container = document.getElementById('recentCheckins');
+                
+                if (recentCheckins.length === 0) {
+                    container.innerHTML = '<div class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No check-ins yet</div>';
+                    return;
+                }
+
+                container.innerHTML = recentCheckins.map(attendee => `
+                    <div class="px-6 py-3 border-b border-slate-200 dark:border-slate-800 last:border-b-0">
+                        <div class="flex items-center justify-between">
                             <div>
-                                <div class="fw-bold">${attendee.name}</div>
-                                <small class="text-muted">${attendee.roll_number}</small>
-                                ${attendee.checked_in ? `
-                                    <div class="mt-1">
-                                        <small class="text-success">
-                                            <i class="bi bi-clock"></i> ${Utils.formatTime(attendee.checkin_time)}
-                                            ${attendee.checker_name ? ` by ${attendee.checker_name}` : ''}
-                                        </small>
-                                    </div>
-                                ` : ''}
+                                <div class="font-medium text-slate-900 dark:text-white">${attendee.name}</div>
+                                <div class="text-sm text-slate-500 dark:text-slate-400">${attendee.email}</div>
                             </div>
-                            <div class="attendee-status-icon">
-                                ${attendee.checked_in 
-                                    ? '<i class="bi bi-check-circle-fill text-success"></i>' 
-                                    : '<i class="bi bi-circle text-muted"></i>'}
+                            <div class="text-right">
+                                <div class="text-sm text-green-600 font-medium">Checked In</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">${Utils.formatTime(attendee.checkin_time)}</div>
                             </div>
                         </div>
-                    `).join('')}
-                </div>
-            `;
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load recent check-ins:', error);
+                document.getElementById('recentCheckins').innerHTML = 
+                    '<div class="px-6 py-4 text-center text-red-500">Failed to load check-ins</div>';
+            }
         }
-        
-        function filterAttendees(attendees) {
-            if (currentFilter === 'all') return attendees;
-            if (currentFilter === 'checked_in') return attendees.filter(a => a.checked_in);
-            if (currentFilter === 'pending') return attendees.filter(a => !a.checked_in);
-            return attendees;
+
+        async function performManualCheckin() {
+            const input = document.getElementById('manualCheckinInput').value.trim();
+            if (!input || !currentEventId) {
+                Utils.showToast('Please select an event and enter attendee details', 'warning');
+                return;
+            }
+
+            try {
+                // Search for attendee
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const attendee = attendees.find(a => 
+                    a.name.toLowerCase().includes(input.toLowerCase()) ||
+                    a.email.toLowerCase().includes(input.toLowerCase()) ||
+                    a.roll_number.toLowerCase().includes(input.toLowerCase())
+                );
+
+                if (!attendee) {
+                    Utils.showToast('Attendee not found', 'error');
+                    return;
+                }
+
+                if (attendee.checked_in) {
+                    Utils.showToast('Attendee already checked in', 'warning');
+                    return;
+                }
+
+                // Perform manual check-in
+                const result = await api.manualCheckin(attendee.id);
+                
+                // Show enhanced success message
+                if (result.message) {
+                    Utils.showToast(result.message, 'success');
+                } else {
+                    Utils.showToast(`✅ ${attendee.name} checked in successfully`, 'success');
+                }
+                
+                // Clear input and refresh data
+                document.getElementById('manualCheckinInput').value = '';
+                await updateEventStats();
+                await loadRecentCheckins();
+            } catch (error) {
+                console.error('Failed to perform manual check-in:', error);
+                
+                // Handle error with enhanced message
+                let errorMessage = 'Failed to check in attendee';
+                if (error.message.includes('already checked in')) {
+                    errorMessage = '✅ Attendee is already checked in';
+                } else if (error.message.includes('not found')) {
+                    errorMessage = '❌ Attendee not found for this event';
+                } else if (error.detail) {
+                    errorMessage = error.detail;
+                }
+                
+                Utils.showToast(errorMessage, 'error');
+            }
         }
-        
-        function setFilter(filter) {
-            currentFilter = filter;
+
+        function refreshEvents() {
+            loadEvents();
+        }
+
+        function refreshCheckins() {
+            if (currentEventId) {
+                loadRecentCheckins();
+            }
+        }
+
+        async function exportAttendees() {
+            if (!currentEventId) {
+                Utils.showToast('Please select an event first', 'warning');
+                return;
+            }
+
+            try {
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const csvContent = generateAttendeesCSV(attendees);
+                downloadCSV(csvContent, `attendees-${currentEventId}.csv`);
+                Utils.showToast('Attendees exported successfully', 'success');
+            } catch (error) {
+                console.error('Failed to export attendees:', error);
+                Utils.showToast('Failed to export attendees', 'error');
+            }
+        }
+
+        async function exportCheckins() {
+            if (!currentEventId) {
+                Utils.showToast('Please select an event first', 'warning');
+                return;
+            }
+
+            try {
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const checkedInAttendees = attendees.filter(a => a.checked_in);
+                const csvContent = generateCheckinsCSV(checkedInAttendees);
+                downloadCSV(csvContent, `checkins-${currentEventId}.csv`);
+                Utils.showToast('Check-ins exported successfully', 'success');
+            } catch (error) {
+                console.error('Failed to export check-ins:', error);
+                Utils.showToast('Failed to export check-ins', 'error');
+            }
+        }
+
+        async function exportReport() {
+            if (!currentEventId) {
+                Utils.showToast('Please select an event first', 'warning');
+                return;
+            }
+
+            try {
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const totalAttendees = attendees.length;
+                const checkedIn = attendees.filter(a => a.checked_in).length;
+                const pending = totalAttendees - checkedIn;
+                const checkinRate = totalAttendees > 0 ? Math.round((checkedIn / totalAttendees) * 100) : 0;
+
+                const reportData = [
+                    ['Event Report'],
+                    [''],
+                    ['Total Attendees', totalAttendees],
+                    ['Checked In', checkedIn],
+                    ['Pending', pending],
+                    ['Check-in Rate', `${checkinRate}%`],
+                    [''],
+                    ['Attendee Details'],
+                    ['Name', 'Email', 'Roll Number', 'Status', 'Check-in Time']
+                ];
+
+                attendees.forEach(attendee => {
+                    reportData.push([
+                        attendee.name,
+                        attendee.email,
+                        attendee.roll_number,
+                        attendee.checked_in ? 'Checked In' : 'Pending',
+                        attendee.checked_in ? new Date(attendee.checkin_time).toLocaleString() : '-'
+                    ]);
+                });
+
+                const csvContent = reportData.map(row => 
+                    row.map(field => `"${field.toString().replace(/"/g, '""')}"`).join(',')
+                ).join('\n');
+
+                downloadCSV(csvContent, `event-report-${currentEventId}.csv`);
+                Utils.showToast('Report generated successfully', 'success');
+            } catch (error) {
+                console.error('Failed to generate report:', error);
+                Utils.showToast('Failed to generate report', 'error');
+            }
+        }
+
+        function generateAttendeesCSV(attendees) {
+            const headers = ['Name', 'Email', 'Roll Number', 'Status', 'Check-in Time'];
+            const rows = attendees.map(attendee => [
+                attendee.name,
+                attendee.email,
+                attendee.roll_number,
+                attendee.checked_in ? 'Checked In' : 'Pending',
+                attendee.checked_in ? new Date(attendee.checkin_time).toLocaleString() : '-'
+            ]);
             
-            // Update active state
-            document.querySelectorAll('.filter-pill').forEach(pill => {
-                pill.classList.remove('active');
-            });
-            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-            
-            // Re-render
-            renderSegregatedView();
+            return [headers, ...rows].map(row => 
+                row.map(field => `"${field.toString().replace(/"/g, '""')}"`).join(',')
+            ).join('\n');
         }
+
+        function generateCheckinsCSV(checkedInAttendees) {
+            const headers = ['Name', 'Email', 'Roll Number', 'Check-in Time'];
+            const rows = checkedInAttendees.map(attendee => [
+                attendee.name,
+                attendee.email,
+                attendee.roll_number,
+                new Date(attendee.checkin_time).toLocaleString()
+            ]);
+            
+            return [headers, ...rows].map(row => 
+                row.map(field => `"${field.toString().replace(/"/g, '""')}"`).join(',')
+            ).join('\n');
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function clearStats() {
+            document.getElementById('totalAttendees').textContent = '0';
+            document.getElementById('checkedIn').textContent = '0';
+            document.getElementById('pending').textContent = '0';
+            document.getElementById('checkinRate').textContent = '0%';
+            document.getElementById('recentCheckins').innerHTML = '<div class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">Select an event to view check-ins</div>';
+        }
+
+        function logout() {
+            Auth.logout();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('darkModeIcon').textContent = 'dark_mode';
+                document.getElementById('darkModeText').textContent = 'Dark Mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (checkinInterval) clearInterval(checkinInterval);
+        });
     </script>
 </body>
 </html>

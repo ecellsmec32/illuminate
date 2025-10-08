@@ -1,22 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>QR Scanner - QrFlow</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../assets/css/qrflow.css" rel="stylesheet">
-    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
     <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
             background: #000;
         }
-        
         #videoContainer {
             position: fixed;
             top: 0;
@@ -25,17 +49,14 @@
             height: 100vh;
             z-index: 1;
         }
-        
         #video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
         canvas {
             display: none;
         }
-        
         .scanner-overlay {
             position: fixed;
             top: 0;
@@ -45,443 +66,808 @@
             z-index: 2;
             pointer-events: none;
         }
-        
         .scanner-header {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            padding: 1rem;
             background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            pointer-events: auto;
+            padding: 1rem;
+            color: white;
         }
-        
-        .scan-frame {
+        .scanner-frame {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 280px;
             height: 280px;
-            border: 3px solid var(--primary);
-            border-radius: 20px;
-            box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
-            animation: pulse 2s infinite;
+            border: 4px solid #137fec;
+            border-radius: 1rem;
+            background: transparent;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
         }
-        
-        @keyframes pulse {
-            0%, 100% { border-color: var(--primary); }
-            50% { border-color: var(--secondary); }
-        }
-        
-        .counter-badge {
+        .scanner-corners {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255,255,255,0.95);
-            padding: 0.75rem 1.25rem;
-            border-radius: 50px;
-            font-weight: 700;
-            color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        
-        .result-overlay {
-            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
+            right: 0;
+            bottom: 0;
         }
-        
-        .result-overlay.show {
-            opacity: 1;
+        .scanner-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #137fec;
         }
-        
-        .result-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        .scanner-corner.top-left {
+            top: -4px;
+            left: -4px;
+            border-right: none;
+            border-bottom: none;
         }
-        
-        .result-success {
-            background: var(--secondary);
-            color: white;
+        .scanner-corner.top-right {
+            top: -4px;
+            right: -4px;
+            border-left: none;
+            border-bottom: none;
         }
-        
-        .result-error {
-            background: var(--danger);
-            color: white;
+        .scanner-corner.bottom-left {
+            bottom: -4px;
+            left: -4px;
+            border-right: none;
+            border-top: none;
         }
-        
-        .result-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+        .scanner-corner.bottom-right {
+            bottom: -4px;
+            right: -4px;
+            border-left: none;
+            border-top: none;
         }
-        
-        .recent-scans {
+        .scanner-footer {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            max-height: 30vh;
-            overflow-y: auto;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
             padding: 1rem;
-            pointer-events: auto;
-        }
-        
-        .recent-scan-item {
-            background: rgba(255,255,255,0.1);
-            border-left: 4px solid var(--secondary);
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
             color: white;
-            display: flex;
-            justify-content: space-between;
+        }
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10;
+            display: none;
             align-items: center;
+            justify-content: center;
+        }
+        .result-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .scanning-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #137fec, transparent);
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateY(-140px); }
+            100% { transform: translateY(140px); }
+        }
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border: 2px solid rgba(19, 127, 236, 0.3);
+            border-radius: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0; }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="../assets/css/qrflow.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="font-display bg-background-light dark:bg-background-dark">
     <!-- Video Container -->
     <div id="videoContainer">
-        <video id="video" playsinline autoplay></video>
+        <video id="video" autoplay muted playsinline></video>
         <canvas id="canvas"></canvas>
     </div>
-    
+
     <!-- Scanner Overlay -->
     <div class="scanner-overlay">
+        <!-- Header -->
         <div class="scanner-header">
-            <button class="btn btn-light" onclick="goBack()">
-                <i class="bi bi-arrow-left"></i>
-            </button>
-            <div class="text-white fw-bold" id="eventTitle">Loading...</div>
-            <button class="btn btn-info" onclick="showManualEntry()">
-                <i class="bi bi-pencil"></i>
-            </button>
-        </div>
-        
-        <div class="counter-badge">
-            <i class="bi bi-people-fill"></i>
-            <span id="checkedInCount">0</span> / <span id="totalCount">0</span>
-        </div>
-        
-        <div class="scan-frame"></div>
-        
-        <div class="recent-scans" id="recentScans">
-            <div class="text-white text-center mb-2">
-                <small>Recent Scans</small>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Result Overlay -->
-    <div class="result-overlay" id="resultOverlay">
-        <div class="result-content" id="resultContent">
-            <div class="result-icon" id="resultIcon"></div>
-            <h3 id="resultName"></h3>
-            <p class="mb-0" id="resultMessage"></p>
-        </div>
-    </div>
-
-    <!-- Manual Entry Modal -->
-    <div class="modal fade" id="manualEntryModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Manual Check-in</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Roll Number</label>
-                        <input type="text" class="form-control" id="rollNumberInput" placeholder="e.g., 21BCE001" autofocus>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="goBack()" class="p-2 bg-black/20 rounded-full hover:bg-black/40 transition-colors">
+                        <span class="material-symbols-outlined text-white">arrow_back</span>
+                    </button>
+                    <div>
+                        <h1 class="text-lg font-semibold text-white">QR Scanner</h1>
+                        <p class="text-sm text-white/80" id="eventName">Select an event</p>
+                        <p class="text-xs text-white/60" id="processedCount">No QR codes processed yet</p>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="processManualEntry()">Check In</button>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleFlash()" id="flashBtn" class="p-2 bg-black/20 rounded-full hover:bg-black/40 transition-colors">
+                        <span class="material-symbols-outlined text-white">flash_off</span>
+                    </button>
+                    <button onclick="toggleDarkMode()" class="p-2 bg-black/20 rounded-full hover:bg-black/40 transition-colors">
+                        <span class="material-symbols-outlined text-white" id="darkModeIcon">dark_mode</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scanner Frame -->
+        <div class="scanner-frame">
+            <div class="pulse-ring"></div>
+            <div class="scanning-line"></div>
+            <div class="scanner-corners">
+                <div class="scanner-corner top-left"></div>
+                <div class="scanner-corner top-right"></div>
+                <div class="scanner-corner bottom-left"></div>
+                <div class="scanner-corner bottom-right"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="scanner-footer">
+            <div class="text-center">
+                <p class="text-white/80 mb-4">Position QR code within the frame</p>
+                <div class="flex justify-center gap-4">
+                    <button onclick="selectEvent()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                        Select Event
+                    </button>
+                    <button onclick="manualCheckin()" class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
+                        Manual Check-in
+                    </button>
+                    <button onclick="clearProcessedQRCodes()" class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
+                        Clear History
+                    </button>
+                    <button onclick="showQRViewer()" class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
+                        View QR Codes
+                    </button>
+                    <button onclick="generateTestQR()" class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
+                        Test QR
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <!-- Event Selection Modal -->
+    <div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Select Event</h3>
+                <button onclick="hideEventModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <select id="eventSelector" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white mb-4">
+                <option value="">Choose an event...</option>
+            </select>
+            <div class="flex gap-3">
+                <button onclick="startScanning()" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90">
+                    Start Scanning
+                </button>
+                <button onclick="hideEventModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Check-in Modal -->
+    <div id="manualModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Manual Check-in</h3>
+                <button onclick="hideManualModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <input type="text" id="manualInput" placeholder="Enter roll number..." class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white mb-4">
+            <div class="flex gap-3">
+                <button onclick="performManualCheckin()" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90">
+                    Check In
+                </button>
+                <button onclick="hideManualModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="result-modal">
+        <div class="result-content">
+            <div id="resultIcon" class="text-6xl mb-4">✅</div>
+            <h3 id="resultTitle" class="text-xl font-bold mb-2">Check-in Successful</h3>
+            <p id="resultMessage" class="text-slate-600 mb-4">Attendee has been checked in</p>
+            <button onclick="closeResultModal()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                Continue Scanning
+            </button>
+        </div>
+    </div>
+
+    <!-- QR Viewer Modal -->
+    <div id="qrViewerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">QR Codes for Event</h3>
+                <button onclick="hideQRViewer()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="qrCodesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- QR codes will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/message-display.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     
     <script>
+        // Check authentication
         Auth.requireAuth();
+        const user = Auth.getCurrentUser();
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const eventId = urlParams.get('id');
-        
-        if (!eventId) {
-            window.location.href = 'dashboard.html';
+        if (user.role !== 'organizer') {
+            Utils.showToast('Access denied - Club organizer only', 'error');
+            setTimeout(() => window.location.href = '../index.html', 2000);
         }
-        
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let isScanning = true;
-        let recentScans = [];
-        let stats = { checked_in: 0, total: 0 };
-        let lastScannedCode = null;
-        let scanCooldown = false;
-        let manualEntryModal;
-        
+
+        let currentEventId = null;
+        let stream = null;
+        let scanning = false;
+        let scanInterval = null;
+        let lastScanTime = 0;
+        let processedQRCodes = new Set(); // Track processed QR codes
+        const SCAN_COOLDOWN = 1000; // 1 second cooldown between scans
+
+        // Initialize scanner
         document.addEventListener('DOMContentLoaded', async () => {
-            manualEntryModal = new bootstrap.Modal(document.getElementById('manualEntryModal'));
-            await loadEventInfo();
-            await updateStats();
-            startCamera();
+            initDarkMode();
+            await loadEvents();
+            selectEvent();
         });
-        
-        async function loadEventInfo() {
+
+        async function loadEvents() {
             try {
-                const event = await api.get(`/api/events/${eventId}`);
-                document.getElementById('eventTitle').textContent = event.name;
-            } catch (error) {
-                console.error('Failed to load event:', error);
-            }
-        }
-        
-        async function updateStats() {
-            try {
-                const dashboard = await api.get(`/api/events/${eventId}/dashboard`);
-                stats.checked_in = dashboard.stats.checked_in;
-                stats.total = dashboard.stats.total_attendees;
+                const events = await api.get('/api/club/events');
+                const eventSelector = document.getElementById('eventSelector');
                 
-                document.getElementById('checkedInCount').textContent = stats.checked_in;
-                document.getElementById('totalCount').textContent = stats.total;
+                eventSelector.innerHTML = '<option value="">Choose an event...</option>';
+                events.forEach(event => {
+                    const option = document.createElement('option');
+                    option.value = event.id;
+                    option.textContent = `${event.name} - ${new Date(event.date).toLocaleDateString()}`;
+                    eventSelector.appendChild(option);
+                });
             } catch (error) {
-                console.error('Failed to update stats:', error);
+                console.error('Failed to load events:', error);
+                Utils.showToast('Failed to load events', 'error');
             }
         }
-        
+
+        function selectEvent() {
+            document.getElementById('eventModal').classList.remove('hidden');
+            document.getElementById('eventModal').classList.add('flex');
+        }
+
+        function hideEventModal() {
+            document.getElementById('eventModal').classList.add('hidden');
+            document.getElementById('eventModal').classList.remove('flex');
+        }
+
+        function manualCheckin() {
+            if (!currentEventId) {
+                Utils.showToast('Please select an event first', 'warning');
+                return;
+            }
+            document.getElementById('manualModal').classList.remove('hidden');
+            document.getElementById('manualModal').classList.add('flex');
+        }
+
+        function hideManualModal() {
+            document.getElementById('manualModal').classList.add('hidden');
+            document.getElementById('manualModal').classList.remove('flex');
+        }
+
+        async function startScanning() {
+            const eventId = document.getElementById('eventSelector').value;
+            if (!eventId) {
+                Utils.showToast('Please select an event', 'warning');
+                return;
+            }
+
+            currentEventId = eventId;
+            const eventName = document.getElementById('eventSelector').selectedOptions[0].textContent;
+            document.getElementById('eventName').textContent = eventName;
+            
+            // Clear processed QR codes for new event
+            processedQRCodes.clear();
+            updateProcessedCount();
+            
+            // Generate QR codes for the event if they don't exist
+            try {
+                await api.post(`/api/events/${eventId}/generate-qr`);
+                Utils.showToast('QR codes generated for this event', 'success');
+            } catch (error) {
+                console.log('QR codes may already exist or generation failed:', error);
+            }
+            
+            hideEventModal();
+            await startCamera();
+        }
+
         async function startCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment' }
-                });
-                video.srcObject = stream;
-                video.setAttribute('playsinline', true);
-                video.play();
-                requestAnimationFrame(scanFrame);
-            } catch (err) {
-                console.error('Camera error:', err);
-                alert('Failed to access camera. Please check permissions.');
-            }
-        }
-        
-        function scanFrame() {
-            if (!isScanning) {
-                requestAnimationFrame(scanFrame);
-                return;
-            }
-            
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                canvas.height = video.videoHeight;
-                canvas.width = video.videoWidth;
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
-                
-                if (code && !scanCooldown) {
-                    processQRCode(code.data);
+                // Stop any existing stream
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
                 }
+
+                // Reset scanning state
+                scanning = false;
+
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                
+                // Wait for video to be ready
+                video.onloadedmetadata = () => {
+                    video.play();
+                    scanning = true;
+                    startQRScanning();
+                };
+                
+            } catch (error) {
+                console.error('Failed to start camera:', error);
+                Utils.showToast('Failed to access camera. Please check permissions.', 'error');
             }
-            
-            requestAnimationFrame(scanFrame);
         }
-        
-        async function processQRCode(qrData) {
-            if (qrData === lastScannedCode) return;
-            
-            console.log('QR Code detected:', qrData.substring(0, 50) + '...');
-            
-            scanCooldown = true;
-            lastScannedCode = qrData;
+
+        function startQRScanning() {
+            if (!scanning) return;
+
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+
+            function scanFrame() {
+                if (!scanning) return;
+
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.height = video.videoHeight;
+                    canvas.width = video.videoWidth;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    if (code) {
+                        const now = Date.now();
+                        if (now - lastScanTime > SCAN_COOLDOWN) {
+                            lastScanTime = now;
+                            handleQRCode(code.data);
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(scanFrame);
+            }
+
+            scanFrame();
+        }
+
+        async function handleQRCode(qrData) {
+            scanning = false;
             
             try {
-                const result = await api.post('/api/checkin/scan', {
-                    qr_token: qrData
-                });
-                
-                if (result.success) {
-                    showResult('success', result.attendee.name, result.message);
-                    stats.checked_in++;
-                    document.getElementById('checkedInCount').textContent = stats.checked_in;
-                    addRecentScan(result.attendee.name, result.attendee.roll_number, true);
-                    playSuccessSound();
-                } else {
-                    showResult('error', 'Error', result.message);
-                    addRecentScan('Unknown', 'Error', false);
-                    playErrorSound();
+                // Stop camera
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
                 }
+
+                // Check if this QR code was already processed in this session
+                if (processedQRCodes.has(qrData)) {
+                    console.log('QR code already processed in this session:', qrData);
+                    MessageDisplay.showResultModal('⚠️ This QR code has already been processed in this session.\n\nPlease use a different QR code or restart the scanner.');
+                    return;
+                }
+
+                // Add to processed QR codes set
+                processedQRCodes.add(qrData);
+                updateProcessedCount();
+
+                // Show loading state
+                MessageDisplay.showLoading('Validating QR code...');
+
+                // Optional: Pre-validate QR token
+                try {
+                    const validateResponse = await api.validateQRToken(qrData);
+                    
+                    if (!validateResponse.success) {
+                        MessageDisplay.showResultModal(validateResponse.message);
+                        return;
+                    }
+
+                    // If already checked in, show info message
+                    if (validateResponse.already_checked_in) {
+                        MessageDisplay.showResultModal(validateResponse.message);
+                        return;
+                    }
+
+                    // Update loading message
+                    MessageDisplay.showLoading('Processing check-in...');
+
+                } catch (validateError) {
+                    console.log('Pre-validation failed, proceeding with direct check-in:', validateError);
+                    // Continue with direct check-in if validation fails
+                }
+
+                // Process QR code for check-in
+                const result = await api.scanQRCheckin(qrData);
+                
+                // Show result using enhanced message display
+                MessageDisplay.showResultModal(result.message);
+                
             } catch (error) {
-                console.error('Check-in error:', error);
-                showResult('error', 'Scan Failed', error.message || 'Invalid QR code');
-                addRecentScan('Unknown', 'Error', false);
-                playErrorSound();
+                console.error('QR scan failed:', error);
+                
+                // Remove from processed set if check-in failed
+                processedQRCodes.delete(qrData);
+                updateProcessedCount();
+                
+                // Handle error with enhanced message display
+                const errorMessage = MessageDisplay.handleApiError(error);
+                MessageDisplay.showResultModal(errorMessage);
             }
-            
-            setTimeout(() => {
-                scanCooldown = false;
-                lastScannedCode = null;
-            }, 3000);
         }
-        
-        function showResult(type, name, message) {
-            const overlay = document.getElementById('resultOverlay');
-            const content = document.getElementById('resultContent');
+
+        function showDuplicateVerification(data) {
+            const modal = document.getElementById('resultModal');
             const icon = document.getElementById('resultIcon');
-            const nameEl = document.getElementById('resultName');
+            const title = document.getElementById('resultTitle');
+            const message = document.getElementById('resultMessage');
+            
+            icon.textContent = '⚠️';
+            icon.className = 'text-6xl mb-4 text-yellow-500';
+            title.textContent = 'Duplicate Pass Detected';
+            message.textContent = `Multiple passes found for ${data.attendee_name}. Please verify which pass to use.`;
+            
+            modal.style.display = 'flex';
+        }
+
+        function showResult(type, title, message) {
+            const modal = document.getElementById('resultModal');
+            const icon = document.getElementById('resultIcon');
+            const titleEl = document.getElementById('resultTitle');
             const messageEl = document.getElementById('resultMessage');
             
-            nameEl.textContent = name;
-            messageEl.textContent = message;
-            
             if (type === 'success') {
-                content.className = 'result-content result-success';
-                icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                icon.textContent = '✅';
+                icon.className = 'text-6xl mb-4 text-green-500';
             } else {
-                content.className = 'result-content result-error';
-                icon.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
+                icon.textContent = '❌';
+                icon.className = 'text-6xl mb-4 text-red-500';
             }
             
-            overlay.classList.add('show');
-            setTimeout(() => overlay.classList.remove('show'), 2000);
-        }
-        
-        function addRecentScan(name, rollNumber, success) {
-            const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            recentScans.unshift({ name, rollNumber, time, success });
-            if (recentScans.length > 5) recentScans.pop();
-            renderRecentScans();
-        }
-        
-        function renderRecentScans() {
-            const container = document.getElementById('recentScans');
-            let html = '<div class="text-white text-center mb-2"><small>Recent Scans</small></div>';
+            titleEl.textContent = title;
+            messageEl.textContent = message;
             
-            recentScans.forEach(scan => {
-                html += `
-                    <div class="recent-scan-item">
-                        <div>
-                            <div class="fw-bold">${scan.name}</div>
-                            <small>${scan.rollNumber}</small>
-                        </div>
-                        <div class="text-end">
-                            <div>${scan.time}</div>
-                            ${scan.success ? '<i class="bi bi-check-circle-fill text-success"></i>' : '<i class="bi bi-x-circle-fill text-danger"></i>'}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
+            modal.style.display = 'flex';
         }
-        
-        function playSuccessSound() {
+
+        function closeResultModal() {
+            MessageDisplay.hideResultModal();
+            // Restart scanning
+            setTimeout(() => {
+                startCamera();
+            }, 500);
+        }
+
+        async function performManualCheckin() {
+            const rollNumber = document.getElementById('manualInput').value.trim();
+            if (!rollNumber || !currentEventId) {
+                Utils.showToast('Please enter roll number', 'warning');
+                return;
+            }
+
             try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                gainNode.gain.value = 0.3;
-                oscillator.start();
-                setTimeout(() => oscillator.stop(), 100);
-            } catch (e) {}
+                // Search for attendee by roll number only
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const attendee = attendees.find(a => 
+                    a.roll_number.toLowerCase() === rollNumber.toLowerCase()
+                );
+
+                if (!attendee) {
+                    Utils.showToast('Attendee not found with this roll number', 'error');
+                    return;
+                }
+
+                if (attendee.checked_in) {
+                    Utils.showToast(`${attendee.name} is already checked in`, 'warning');
+                    return;
+                }
+
+                // Check for duplicate passes
+                const duplicatePasses = attendees.filter(a => 
+                    a.roll_number.toLowerCase() === rollNumber.toLowerCase() && a.id !== attendee.id
+                );
+
+                if (duplicatePasses.length > 0) {
+                    showDuplicatePassModal(attendee, duplicatePasses);
+                    return;
+                }
+
+                // Perform manual check-in
+                const result = await api.manualCheckin(attendee.id);
+                
+                hideManualModal();
+                
+                // Show result using enhanced message display
+                if (result.message) {
+                    MessageDisplay.showResultModal(result.message);
+                } else {
+                    MessageDisplay.showResultModal(`✅ Manual check-in successful!\n\n👤 Name: ${attendee.name}\n🎓 Roll Number: ${attendee.roll_number}`);
+                }
+                
+            } catch (error) {
+                console.error('Manual check-in failed:', error);
+                
+                // Handle error with enhanced message display
+                const errorMessage = MessageDisplay.handleApiError(error);
+                hideManualModal();
+                MessageDisplay.showResultModal(errorMessage);
+            }
         }
-        
-        function playErrorSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.frequency.value = 400;
-                oscillator.type = 'sine';
-                gainNode.gain.value = 0.3;
-                oscillator.start();
-                setTimeout(() => oscillator.stop(), 200);
-            } catch (e) {}
+
+        // Add global functions for modal interactions
+        window.verifyDuplicatePass = verifyDuplicatePass;
+        window.closeDuplicateModal = closeDuplicateModal;
+
+        function showQRViewer() {
+            if (!currentEventId) {
+                Utils.showToast('Please select an event first', 'warning');
+                return;
+            }
+            document.getElementById('qrViewerModal').classList.remove('hidden');
+            document.getElementById('qrViewerModal').classList.add('flex');
+            loadQRCodes();
         }
-        
-        function showManualEntry() {
-            manualEntryModal.show();
+
+        function hideQRViewer() {
+            document.getElementById('qrViewerModal').classList.add('hidden');
+            document.getElementById('qrViewerModal').classList.remove('flex');
         }
-        
-        async function processManualEntry() {
-            const rollNumber = document.getElementById('rollNumberInput').value.trim();
-            
-            if (!rollNumber) {
-                alert('Please enter a roll number');
+
+        function generateTestQR() {
+            if (!currentEventId) {
+                Utils.showToast('Please select an event first', 'warning');
                 return;
             }
             
-            try {
-                const attendees = await api.get(`/api/events/${eventId}/attendees`);
-                const attendee = attendees.find(a => a.roll_number.toLowerCase() === rollNumber.toLowerCase());
-                
-                if (!attendee) {
-                    alert('Attendee not found');
-                    return;
-                }
-                
-                if (attendee.checked_in) {
-                    alert('Already checked in!');
-                    return;
-                }
-                
-                await api.post(`/api/attendees/${attendee.id}/checkin-manual`);
-                showResult('success', attendee.name, 'Manually checked in');
-                stats.checked_in++;
-                document.getElementById('checkedInCount').textContent = stats.checked_in;
-                addRecentScan(attendee.name, attendee.roll_number, true);
-                playSuccessSound();
-                manualEntryModal.hide();
-                document.getElementById('rollNumberInput').value = '';
-            } catch (error) {
-                alert('Check-in failed: ' + error.message);
+            // Create a test QR code for testing
+            const testQRData = `test_qr_${currentEventId}_${Date.now()}`;
+            Utils.showToast(`Test QR Code: ${testQRData}`, 'info');
+            
+            // Simulate QR code detection for testing
+            setTimeout(() => {
+                handleQRCode(testQRData);
+            }, 1000);
+        }
+
+        function clearProcessedQRCodes() {
+            const count = processedQRCodes.size;
+            processedQRCodes.clear();
+            updateProcessedCount();
+            
+            if (count > 0) {
+                Utils.showToast(`Cleared ${count} processed QR codes. You can now scan the same QR codes again.`, 'success');
+            } else {
+                Utils.showToast('No processed QR codes to clear.', 'info');
             }
         }
-        
+
+        function updateProcessedCount() {
+            const count = processedQRCodes.size;
+            const countElement = document.getElementById('processedCount');
+            
+            if (count === 0) {
+                countElement.textContent = 'No QR codes processed yet';
+            } else {
+                countElement.textContent = `${count} QR code${count === 1 ? '' : 's'} processed`;
+            }
+        }
+
+        async function loadQRCodes() {
+            try {
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const container = document.getElementById('qrCodesContainer');
+                
+                if (attendees.length === 0) {
+                    container.innerHTML = '<div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-8">No attendees found for this event</div>';
+                    return;
+                }
+
+                container.innerHTML = attendees.map(attendee => `
+                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
+                        <div class="mb-2">
+                            <div class="font-medium text-slate-900 dark:text-white">${attendee.name}</div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400">${attendee.roll_number}</div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="w-32 h-32 mx-auto bg-slate-100 dark:bg-slate-700 rounded flex items-center justify-center">
+                                <span class="text-xs text-slate-500">QR Code</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400">
+                            ${attendee.checked_in ? '✅ Checked In' : '⏳ Pending'}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load QR codes:', error);
+                document.getElementById('qrCodesContainer').innerHTML = 
+                    '<div class="col-span-full text-center text-red-500 py-8">Failed to load QR codes</div>';
+            }
+        }
+
+        function showDuplicatePassModal(attendee, duplicates) {
+            // Create duplicate pass verification modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-full max-w-md mx-4">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Duplicate Passes Found</h3>
+                    <p class="text-slate-600 dark:text-slate-400 mb-4">
+                        Multiple passes found for ${attendee.name} (${attendee.roll_number}). Please select which pass to use:
+                    </p>
+                    <div class="space-y-2 mb-4">
+                        <label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+                            <input type="radio" name="passSelection" value="${attendee.id}" checked class="mr-3">
+                            <div>
+                                <div class="font-medium">${attendee.name}</div>
+                                <div class="text-sm text-slate-500">${attendee.email}</div>
+                            </div>
+                        </label>
+                        ${duplicates.map(dup => `
+                            <label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+                                <input type="radio" name="passSelection" value="${dup.id}" class="mr-3">
+                                <div>
+                                    <div class="font-medium">${dup.name}</div>
+                                    <div class="text-sm text-slate-500">${dup.email}</div>
+                                </div>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="verifyDuplicatePass()" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90">
+                            Verify & Check In
+                        </button>
+                        <button onclick="closeDuplicateModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        async function verifyDuplicatePass() {
+            const selectedPass = document.querySelector('input[name="passSelection"]:checked');
+            if (!selectedPass) {
+                Utils.showToast('Please select a pass', 'warning');
+                return;
+            }
+
+            try {
+                const result = await api.manualCheckin(selectedPass.value);
+                closeDuplicateModal();
+                hideManualModal();
+                
+                // Show result using enhanced message display
+                if (result.message) {
+                    MessageDisplay.showResultModal(result.message);
+                } else {
+                    MessageDisplay.showResultModal('✅ Check-in Successful\n\nAttendee has been checked in successfully');
+                }
+            } catch (error) {
+                console.error('Duplicate pass verification failed:', error);
+                const errorMessage = MessageDisplay.handleApiError(error);
+                MessageDisplay.showResultModal(errorMessage);
+            }
+        }
+
+        function closeDuplicateModal() {
+            const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function toggleFlash() {
+            // Flash toggle functionality would go here
+            Utils.showToast('Flash toggle coming soon', 'info');
+        }
+
         function goBack() {
-            const stream = video.srcObject;
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
             }
-            window.location.href = `event-details.html?id=${eventId}`;
+            window.location.href = 'dashboard.html';
         }
-        
+
+        function logout() {
+            Auth.logout();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('darkModeIcon').textContent = 'dark_mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+            }
+        }
+
+        // Cleanup on page unload
         window.addEventListener('beforeunload', () => {
-            const stream = video.srcObject;
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
             }

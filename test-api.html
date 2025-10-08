@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        .error {
+            border-left-color: #f44336;
+        }
+        .success {
+            border-left-color: #4CAF50;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        pre {
+            background: #333;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 QRFlow API Connection Test</h1>
+    
+    <div class="test-section">
+        <h3>1. Configuration Test</h3>
+        <p>API Base URL: <span id="api-url"></span></p>
+        <p>Current Domain: <span id="current-domain"></span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Backend Health Check</h3>
+        <button onclick="testHealthCheck()">Test /api/health</button>
+        <button onclick="testRootEndpoint()">Test Root Domain</button>
+        <button onclick="testAlternativePorts()">Test Alternative Ports</button>
+        <div id="health-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. CORS Test</h3>
+        <button onclick="testCORS()">Test CORS Headers</button>
+        <div id="cors-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. Login Test</h3>
+        <input type="text" id="username" placeholder="Username" style="padding: 8px; margin: 5px; border-radius: 4px; border: 1px solid #555; background: #333; color: white;">
+        <input type="password" id="password" placeholder="Password" style="padding: 8px; margin: 5px; border-radius: 4px; border: 1px solid #555; background: #333; color: white;">
+        <button onclick="testLogin()">Test Login</button>
+        <div id="login-result"></div>
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script>
+        // Display configuration
+        document.getElementById('api-url').textContent = CONFIG.API_BASE_URL;
+        document.getElementById('current-domain').textContent = window.location.hostname;
+
+        async function testHealthCheck() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<p>Testing /api/health endpoint...</p>';
+            
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ /api/health endpoint is working!</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ /api/health responded with error</h4>
+                            <p>Status: ${response.status} ${response.statusText}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ /api/health endpoint failed</h4>
+                        <p>Error: ${error.message}</p>
+                        <p>This endpoint might not exist or the server is not running.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testRootEndpoint() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<p>Testing root domain...</p>';
+            
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Root domain is reachable!</h4>
+                            <p>Response: ${data.substring(0, 200)}...</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Root domain responded with error</h4>
+                            <p>Status: ${response.status} ${response.statusText}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Root domain connection failed</h4>
+                        <p>Error: ${error.message}</p>
+                        <p>The server at nyxgenai.com is not responding.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testAlternativePorts() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<p>Testing alternative ports and paths...</p>';
+            
+            const testUrls = [
+                'https://nyxgenai.com:8000',
+                'https://nyxgenai.com:3000',
+                'https://nyxgenai.com:5000',
+                'https://nyxgenai.com/api',
+                'https://nyxgenai.com/docs',
+                'https://nyxgenai.com/health',
+                'https://nyxgenai.com/api/docs',
+                'https://nyxgenai.com/api/health',
+                'https://nyxgenai.com/api/v1',
+                'https://nyxgenai.com/api/v1/health'
+            ];
+            
+            let results = [];
+            
+            for (const url of testUrls) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const responseText = await response.text();
+                    const isJson = responseText.startsWith('{') || responseText.startsWith('[');
+                    const preview = isJson ? JSON.stringify(JSON.parse(responseText), null, 2).substring(0, 100) : responseText.substring(0, 100);
+                    
+                    results.push(`✅ ${url} - Status: ${response.status}\n   Preview: ${preview}...`);
+                } catch (error) {
+                    results.push(`❌ ${url} - Error: ${error.message}`);
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>🔍 Alternative Endpoints Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                </div>
+            `;
+        }
+
+        async function testCORS() {
+            const resultDiv = document.getElementById('cors-result');
+            resultDiv.innerHTML = '<p>Testing CORS headers...</p>';
+            
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/auth/login`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type, Authorization'
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                    'Access-Control-Allow-Credentials': response.headers.get('Access-Control-Allow-Credentials')
+                };
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ CORS Headers Received</h4>
+                        <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ CORS Test Failed</h4>
+                        <p>Error: ${error.message}</p>
+                        <p>This indicates a CORS configuration issue.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('login-result');
+            
+            if (!username || !password) {
+                resultDiv.innerHTML = '<div class="error"><h4>❌ Please enter username and password</h4></div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p>Testing login...</p>';
+            
+            try {
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('password', password);
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Login successful!</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Login failed</h4>
+                            <p>Status: ${response.status} ${response.statusText}</p>
+                            <pre>${JSON.stringify(errorData, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Login request failed</h4>
+                        <p>Error: ${error.message}</p>
+                        <p>This is likely a CORS or network issue.</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

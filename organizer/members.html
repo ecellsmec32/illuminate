@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Members - QrFlow</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="../assets/css/qrflow.css" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-background-light dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-slate-800 dark:text-white">
+                    <span id="clubName">Loading...</span>
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Member Management
+                </p>
+            </div>
+            <nav class="flex-1 px-4 py-2">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="dashboard.html">
+                    <span class="material-symbols-outlined text-2xl"> event </span>
+                    <span>Events</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="checkin-dashboard.html">
+                    <span class="material-symbols-outlined text-2xl"> qr_code_scanner </span>
+                    <span>Check-in</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="scanner.html">
+                    <span class="material-symbols-outlined text-2xl"> qr_code </span>
+                    <span>Scanner</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary font-semibold" href="#">
+                    <span class="material-symbols-outlined text-2xl"> group </span>
+                    <span>Members</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="../admin/club-admin.html">
+                    <span class="material-symbols-outlined text-2xl"> dashboard </span>
+                    <span>Club Admin</span>
+                </a>
+            </nav>
+            <div class="p-4">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-2xl" id="darkModeIcon"> dark_mode </span>
+                    <span id="darkModeText">Dark Mode</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="logout()">
+                    <span class="material-symbols-outlined text-2xl"> logout </span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <header class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">
+                            Club Members
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400">
+                            Manage your club members
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="showAddMemberModal()" class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90">
+                            <span class="material-symbols-outlined text-lg mr-2"> person_add </span>
+                            Add Member
+                        </button>
+                        <button onclick="exportMembers()" class="flex items-center justify-center rounded-lg h-10 px-6 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-sm font-bold shadow-sm hover:bg-green-200 dark:hover:bg-green-800">
+                            <span class="material-symbols-outlined text-lg mr-2"> download </span>
+                            Export Members
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Search and Filters -->
+            <div class="mb-6">
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="searchInput" placeholder="Search members..." class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" onkeyup="searchMembers()">
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="statusFilter" class="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" onchange="filterMembers()">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                            <button onclick="clearFilters()" class="px-3 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
+                                <span class="material-symbols-outlined">clear</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Members Table -->
+            <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg">
+                <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+                        All Members
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800">
+                            <tr>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Member
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Roll Number
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Joined
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="membersTable">
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+                                    <div class="flex items-center justify-center">
+                                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                        <span class="ml-2">Loading members...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Add Member</h3>
+                <button onclick="hideAddMemberModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form id="addMemberForm" onsubmit="submitAddMember(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+                    <input type="text" id="memberName" name="name" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                    <input type="email" id="memberEmail" name="email" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Roll Number</label>
+                    <input type="text" id="memberRollNumber" name="roll_number" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90">
+                        Add Member
+                    </button>
+                    <button type="button" onclick="hideAddMemberModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    
+    <script>
+        // Check authentication
+        Auth.requireAuth();
+        const user = Auth.getCurrentUser();
+        
+        if (user.role !== 'organizer') {
+            Utils.showToast('Access denied - Club organizer only', 'error');
+            setTimeout(() => window.location.href = '../index.html', 2000);
+        }
+
+        let allMembers = [];
+        let filteredMembers = [];
+
+        // Load members data
+        document.addEventListener('DOMContentLoaded', async () => {
+            initDarkMode();
+            await loadClubInfo();
+            await loadMembers();
+        });
+
+        async function loadClubInfo() {
+            try {
+                const club = await api.get('/api/club/info');
+                document.getElementById('clubName').textContent = club.name;
+            } catch (error) {
+                console.error('Failed to load club info:', error);
+            }
+        }
+
+        async function loadMembers() {
+            try {
+                allMembers = await api.get('/api/club/members');
+                filteredMembers = [...allMembers];
+                renderMembers();
+            } catch (error) {
+                console.error('Failed to load members:', error);
+                document.getElementById('membersTable').innerHTML = 
+                    '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Failed to load members</td></tr>';
+            }
+        }
+
+        function renderMembers() {
+            const tbody = document.getElementById('membersTable');
+
+            if (filteredMembers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No members found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filteredMembers.map(member => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-slate-900 dark:text-white">${member.name}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                        ${member.email}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                        ${member.roll_number}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${member.active ? 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300' : 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-300'}">
+                            ${member.active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                        ${Utils.formatTime(member.created_at)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex gap-2">
+                            <button onclick="editMember(${member.id})" class="text-primary hover:text-primary/80">
+                                Edit
+                            </button>
+                            <button onclick="toggleMemberStatus(${member.id}, ${member.active})" class="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
+                                ${member.active ? 'Deactivate' : 'Activate'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function searchMembers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredMembers = allMembers.filter(member => 
+                member.name.toLowerCase().includes(searchTerm) ||
+                member.email.toLowerCase().includes(searchTerm) ||
+                member.roll_number.toLowerCase().includes(searchTerm)
+            );
+            renderMembers();
+        }
+
+        function filterMembers() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredMembers = allMembers.filter(member => {
+                const matchesSearch = member.name.toLowerCase().includes(searchTerm) ||
+                    member.email.toLowerCase().includes(searchTerm) ||
+                    member.roll_number.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'active' && member.active) ||
+                    (statusFilter === 'inactive' && !member.active);
+                
+                return matchesSearch && matchesStatus;
+            });
+            renderMembers();
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            filteredMembers = [...allMembers];
+            renderMembers();
+        }
+
+        function showAddMemberModal() {
+            document.getElementById('addMemberModal').classList.remove('hidden');
+            document.getElementById('addMemberModal').classList.add('flex');
+        }
+
+        function hideAddMemberModal() {
+            document.getElementById('addMemberModal').classList.add('hidden');
+            document.getElementById('addMemberModal').classList.remove('flex');
+            document.getElementById('addMemberForm').reset();
+        }
+
+        async function submitAddMember(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const memberData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                roll_number: formData.get('roll_number')
+            };
+
+            try {
+                await api.post('/api/club/members', memberData);
+                Utils.showToast('Member added successfully', 'success');
+                hideAddMemberModal();
+                await loadMembers();
+            } catch (error) {
+                console.error('Failed to add member:', error);
+                Utils.showToast('Failed to add member', 'error');
+            }
+        }
+
+        function editMember(memberId) {
+            Utils.showToast('Edit member functionality coming soon', 'info');
+        }
+
+        async function toggleMemberStatus(memberId, currentStatus) {
+            const action = currentStatus ? 'deactivate' : 'activate';
+            const confirmed = confirm(`Are you sure you want to ${action} this member?`);
+            if (!confirmed) return;
+
+            try {
+                if (currentStatus) {
+                    await api.delete(`/api/club/members/${memberId}`);
+                } else {
+                    await api.post(`/api/club/members/${memberId}/activate`);
+                }
+                Utils.showToast(`Member ${action}d successfully`, 'success');
+                await loadMembers();
+            } catch (error) {
+                console.error('Failed to update member status:', error);
+                Utils.showToast('Failed to update member status', 'error');
+            }
+        }
+
+        function exportMembers() {
+            const csvContent = generateMembersCSV(filteredMembers);
+            downloadCSV(csvContent, 'members-export.csv');
+            Utils.showToast('Members exported successfully', 'success');
+        }
+
+        function generateMembersCSV(members) {
+            const headers = ['Name', 'Email', 'Roll Number', 'Status', 'Joined Date'];
+            const rows = members.map(member => [
+                member.name,
+                member.email,
+                member.roll_number,
+                member.active ? 'Active' : 'Inactive',
+                new Date(member.created_at).toLocaleDateString()
+            ]);
+            
+            return [headers, ...rows].map(row => 
+                row.map(field => `"${field.toString().replace(/"/g, '""')}"`).join(',')
+            ).join('\n');
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function logout() {
+            Auth.logout();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('darkModeIcon').textContent = 'dark_mode';
+                document.getElementById('darkModeText').textContent = 'Dark Mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+    </script>
+</body>
+</html>

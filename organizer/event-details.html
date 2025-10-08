@@ -1,441 +1,816 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Event Details - QrFlow</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../assets/css/qrflow.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="../assets/css/qrflow.css" rel="stylesheet"/>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="qrflow-navbar">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-3">
-                    <a href="dashboard.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-arrow-left"></i>
-                        <span class="d-none d-md-inline">Back</span>
-                    </a>
-                    <a href="dashboard.html" class="qrflow-logo">
-                        <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
-                        <span>QrFlow</span>
-                    </a>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#" onclick="Auth.logout(); return false;">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </a></li>
-                    </ul>
-                </div>
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-background-light dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-slate-800 dark:text-white">
+                    <span id="clubName">Loading...</span>
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Event Management
+                </p>
             </div>
-        </div>
-    </nav>
+            <nav class="flex-1 px-4 py-2">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="dashboard.html">
+                    <span class="material-symbols-outlined text-2xl"> event </span>
+                    <span>Events</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="checkin-dashboard.html">
+                    <span class="material-symbols-outlined text-2xl"> qr_code_scanner </span>
+                    <span>Check-in</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="scanner.html">
+                    <span class="material-symbols-outlined text-2xl"> qr_code </span>
+                    <span>Scanner</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary font-semibold" href="#">
+                    <span class="material-symbols-outlined text-2xl"> info </span>
+                    <span>Event Details</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="../admin/club-admin.html">
+                    <span class="material-symbols-outlined text-2xl"> dashboard </span>
+                    <span>Club Admin</span>
+                </a>
+            </nav>
+            <div class="p-4">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-2xl" id="darkModeIcon"> dark_mode </span>
+                    <span id="darkModeText">Dark Mode</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="logout()">
+                    <span class="material-symbols-outlined text-2xl"> logout </span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
 
-    <!-- Main Content -->
-    <div class="container mt-4">
-        <!-- Event Header -->
-        <div id="eventHeader" class="card mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <header class="mb-8">
+                <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="mb-2" id="eventName">Loading...</h3>
-                        <div class="d-flex flex-wrap gap-3 text-muted">
-                            <span><i class="bi bi-calendar3"></i> <span id="eventDate"></span></span>
-                            <span><i class="bi bi-geo-alt"></i> <span id="eventVenue"></span></span>
-                        </div>
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white" id="eventTitle">
+                            Event Details
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400" id="eventDate">
+                            Loading event information...
+                        </p>
                     </div>
-                    <span class="badge badge-primary" id="eventStatus">Upcoming</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-6 col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-card-value" id="totalAttendees">0</div>
-                    <div class="stat-card-label">Total</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-card-value text-success" id="checkedIn">0</div>
-                    <div class="stat-card-label">Checked In</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-card-value text-warning" id="qrPending">0</div>
-                    <div class="stat-card-label">QR Pending</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-card-value text-danger" id="emailFailed">0</div>
-                    <div class="stat-card-label">Email Failed</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Actions Bar -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" onclick="showUploadModal()">
-                        <i class="bi bi-upload"></i> Upload CSV
-                    </button>
-                    <button class="btn btn-secondary" id="generateQrBtn" onclick="generateQRCodes()">
-                        <i class="bi bi-qr-code"></i> Generate QR Codes
-                        <span class="badge bg-light text-dark ms-1" id="pendingCount">0</span>
-                    </button>
-                    <button class="btn btn-success" onclick="window.location.href='scanner.html?id=' + eventId">
-                        <i class="bi bi-qr-code-scan"></i> Scan QR
-                    </button>
-                    <button class="btn btn-info" onclick="window.location.href='checkin-dashboard.html?id=' + eventId">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </button>
-                    <button class="btn btn-outline-primary" onclick="exportCSV()">
-                        <i class="bi bi-download"></i> Export
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Filters & Search -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Search by name, email, or roll number...">
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <select class="form-select" id="branchFilter">
-                            <option value="">All Branches</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <select class="form-select" id="yearFilter">
-                            <option value="">All Years</option>
-                            <option value="1">Year 1</option>
-                            <option value="2">Year 2</option>
-                            <option value="3">Year 3</option>
-                            <option value="4">Year 4</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <select class="form-select" id="sectionFilter">
-                            <option value="">All Sections</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <select class="form-select" id="statusFilter">
-                            <option value="">All Status</option>
-                            <option value="checked_in">Checked In</option>
-                            <option value="not_checked_in">Not Checked In</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Attendees Table -->
-        <div class="card">
-            <div class="card-body">
-                <h5 class="mb-3">Attendees</h5>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Roll Number</th>
-                                <th class="d-none d-md-table-cell">Branch</th>
-                                <th class="d-none d-md-table-cell">Year</th>
-                                <th class="d-none d-lg-table-cell">Section</th>
-                                <th>QR</th>
-                                <th>Email</th>
-                                <th>Check-in</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attendeesTable">
-                            <tr>
-                                <td colspan="9" class="text-center py-4">
-                                    <div class="spinner-border text-primary"></div>
-                                    <p class="mt-2 mb-0">Loading attendees...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Upload CSV Modal -->
-    <div class="modal fade" id="uploadModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-upload"></i> Upload Attendees</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Download CSV Template</label>
-                        <button class="btn btn-outline-primary btn-sm w-100" onclick="downloadTemplate()">
-                            <i class="bi bi-download"></i> Download Template
+                    <div class="flex gap-3">
+                        <button onclick="editEvent()" class="flex items-center justify-center rounded-lg h-10 px-6 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-white text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700">
+                            <span class="material-symbols-outlined text-lg mr-2"> edit </span>
+                            Edit Event
+                        </button>
+                        <button onclick="deleteEvent()" class="flex items-center justify-center rounded-lg h-10 px-6 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-sm font-bold shadow-sm hover:bg-red-200 dark:hover:bg-red-800">
+                            <span class="material-symbols-outlined text-lg mr-2"> delete </span>
+                            Delete Event
                         </button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Upload CSV File</label>
-                        <input type="file" class="form-control" id="csvFile" accept=".csv">
-                    </div>
-                    <div id="uploadProgress" style="display:none;">
-                        <div class="progress mb-2">
-                            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+            </header>
+
+            <!-- Event Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Total Attendees
+                    </p>
+                    <p class="text-4xl font-bold text-slate-900 dark:text-white" id="totalAttendees">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Checked In
+                    </p>
+                    <p class="text-4xl font-bold text-green-600" id="checkedIn">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Pending
+                    </p>
+                    <p class="text-4xl font-bold text-yellow-600" id="pending">
+                        0
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Check-in Rate
+                    </p>
+                    <p class="text-4xl font-bold text-primary" id="checkinRate">
+                        0%
+                    </p>
+                </div>
+            </div>
+
+            <!-- Event Information -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Event Details -->
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Event Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Event Name</label>
+                            <p class="text-slate-900 dark:text-white" id="eventName">-</p>
                         </div>
-                        <small class="text-muted" id="uploadStatus">Uploading...</small>
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Description</label>
+                            <p class="text-slate-900 dark:text-white" id="eventDescription">-</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Date & Time</label>
+                            <p class="text-slate-900 dark:text-white" id="eventDateTime">-</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Venue</label>
+                            <p class="text-slate-900 dark:text-white" id="eventVenue">-</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Created</label>
+                            <p class="text-slate-900 dark:text-white" id="eventCreated">-</p>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="uploadCSV()">Upload</button>
+
+                <!-- Quick Actions -->
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <button onclick="viewAttendees()" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                            <span class="material-symbols-outlined">group</span>
+                            View Attendees
+                        </button>
+                        <button onclick="checkinDashboard()" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-800">
+                            <span class="material-symbols-outlined">qr_code_scanner</span>
+                            Check-in Dashboard
+                        </button>
+                        <button onclick="generateQRCodes()" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800">
+                            <span class="material-symbols-outlined">qr_code</span>
+                            Generate QR Codes
+                        </button>
+                        <button onclick="exportData()" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800">
+                            <span class="material-symbols-outlined">download</span>
+                            Export Data
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Recent Attendees -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Recent Attendees
+                </h3>
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg">
+                    <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-lg font-semibold text-slate-900 dark:text-white">
+                                Attendee List
+                            </h4>
+                            <button onclick="refreshAttendees()" class="text-sm px-3 py-1 bg-primary text-white rounded hover:bg-primary/90">
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Roll Number
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                        Check-in Time
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="attendeesTable">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+                                        <div class="flex items-center justify-center">
+                                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                            <span class="ml-2">Loading attendees...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Event Modal -->
+    <div id="editEventModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Edit Event</h3>
+                <button onclick="hideEditEventModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form id="editEventForm" onsubmit="submitEditEvent(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Event Name</label>
+                    <input type="text" id="editEventName" name="eventName" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Description</label>
+                    <textarea id="editEventDescription" name="eventDescription" rows="3" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Date & Time</label>
+                    <input type="datetime-local" id="editEventDate" name="eventDate" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Venue</label>
+                    <input type="text" id="editEventVenue" name="eventVenue" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90">
+                        Update Event
+                    </button>
+                    <button type="button" onclick="hideEditEventModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+    </div>
+</div>
+
+<!-- Attendee Details Modal -->
+<div id="attendeeDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Attendee Details
+                </h3>
+                <button onclick="hideAttendeeDetailsModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                <!-- Personal Information -->
+                <div class="mb-6">
+                    <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">Personal Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</label>
+                            <p id="attendeeName" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+                            <p id="attendeeEmail" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Roll Number</label>
+                            <p id="attendeeRollNumber" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Branch</label>
+                            <p id="attendeeBranch" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Year</label>
+                            <p id="attendeeYear" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Section</label>
+                            <p id="attendeeSection" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</label>
+                            <p id="attendeePhone" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Gender</label>
+                            <p id="attendeeGender" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QR Code Status -->
+                <div class="mb-6">
+                    <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">QR Code Status</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">QR Generated</span>
+                            <span id="qrGeneratedStatus" class="px-2 py-1 text-xs font-medium rounded-full"></span>
+                        </div>
+                        <div id="qrGeneratedAtContainer" class="hidden">
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Generated At</label>
+                            <p id="qrGeneratedAt" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">QR Token</span>
+                            <span id="qrToken" class="text-xs text-gray-600 dark:text-gray-400 font-mono"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Status -->
+                <div class="mb-6">
+                    <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">Email Status</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Email Sent</span>
+                            <span id="emailSentStatus" class="px-2 py-1 text-xs font-medium rounded-full"></span>
+                        </div>
+                        <div id="emailSentAtContainer" class="hidden">
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Sent At</label>
+                            <p id="emailSentAt" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div id="emailErrorContainer" class="hidden">
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Error</label>
+                            <p id="emailError" class="text-sm text-red-600 dark:text-red-400"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Check-in Status -->
+                <div class="mb-6">
+                    <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">Check-in Status</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Checked In</span>
+                            <span id="checkedInStatus" class="px-2 py-1 text-xs font-medium rounded-full"></span>
+                        </div>
+                        <div id="checkinTimeContainer" class="hidden">
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Check-in Time</label>
+                            <p id="checkinTime" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timestamps -->
+                <div class="mb-6">
+                    <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">Timestamps</h4>
+                    <div class="space-y-2">
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Created At</label>
+                            <p id="createdAt" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Last Updated</label>
+                            <p id="updatedAt" class="text-sm text-gray-900 dark:text-white"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-6 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex space-x-3">
+                    <button onclick="resendQRCode()" 
+                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">qr_code</span>
+                        Resend QR
+                    </button>
+                    <button onclick="sendEmailAgain()" 
+                            class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">email</span>
+                        Send Email
+                    </button>
+                </div>
+                <button onclick="hideAttendeeDetailsModal()" 
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                    Close
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Scripts -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
     
     <script>
+        // Check authentication
         Auth.requireAuth();
+        const user = Auth.getCurrentUser();
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const eventId = urlParams.get('id');
-        let allAttendees = [];
-        let uploadModalInstance;
-
-        if (!eventId) {
-            window.location.href = 'dashboard.html';
+        if (user.role !== 'organizer') {
+            Utils.showToast('Access denied - Club organizer only', 'error');
+            setTimeout(() => window.location.href = '../index.html', 2000);
         }
 
+        let currentEventId = null;
+        let eventData = null;
+
+        // Load event data
         document.addEventListener('DOMContentLoaded', async () => {
-            uploadModalInstance = new bootstrap.Modal(document.getElementById('uploadModal'));
-            await loadEventDetails();
-            await loadAttendees();
-            setupFilters();
+            initDarkMode();
+            await loadClubInfo();
+            await loadEventData();
         });
 
-        async function loadEventDetails() {
+        async function loadClubInfo() {
             try {
-                const event = await api.get(`/api/events/${eventId}`);
-                document.getElementById('eventName').textContent = event.name;
-                document.getElementById('eventDate').textContent = Utils.formatDate(event.date);
-                document.getElementById('eventVenue').textContent = event.venue || 'TBA';
-                
-                const status = Utils.getEventStatus(event.date);
-                document.getElementById('eventStatus').className = `badge badge-${status.class}`;
-                document.getElementById('eventStatus').textContent = status.label;
+                const club = await api.get('/api/club/info');
+                document.getElementById('clubName').textContent = club.name;
             } catch (error) {
-                Utils.showToast('Failed to load event details', 'error');
+                console.error('Failed to load club info:', error);
+            }
+        }
+
+        async function loadEventData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id');
+            
+            if (!eventId) {
+                Utils.showToast('Event ID not provided', 'error');
+                setTimeout(() => window.location.href = 'dashboard.html', 2000);
+                return;
+            }
+
+            currentEventId = eventId;
+            
+            try {
+                eventData = await api.get(`/api/events/${eventId}`);
+                await loadEventStats();
+                await loadAttendees();
+                updateEventInfo();
+            } catch (error) {
+                console.error('Failed to load event data:', error);
+                Utils.showToast('Failed to load event data', 'error');
+            }
+        }
+
+        function updateEventInfo() {
+            if (!eventData) return;
+
+            document.getElementById('eventTitle').textContent = eventData.name;
+            document.getElementById('eventDate').textContent = Utils.formatTime(eventData.date);
+            document.getElementById('eventName').textContent = eventData.name;
+            document.getElementById('eventDescription').textContent = eventData.description || 'No description';
+            document.getElementById('eventDateTime').textContent = Utils.formatTime(eventData.date);
+            document.getElementById('eventVenue').textContent = eventData.venue || 'No venue specified';
+            document.getElementById('eventCreated').textContent = Utils.formatTime(eventData.created_at);
+        }
+
+        async function loadEventStats() {
+            if (!currentEventId) return;
+
+            try {
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const totalAttendees = attendees.length;
+                const checkedIn = attendees.filter(a => a.checked_in).length;
+                const pending = totalAttendees - checkedIn;
+                const checkinRate = totalAttendees > 0 ? Math.round((checkedIn / totalAttendees) * 100) : 0;
+
+                document.getElementById('totalAttendees').textContent = totalAttendees;
+                document.getElementById('checkedIn').textContent = checkedIn;
+                document.getElementById('pending').textContent = pending;
+                document.getElementById('checkinRate').textContent = `${checkinRate}%`;
+            } catch (error) {
+                console.error('Failed to load event stats:', error);
             }
         }
 
         async function loadAttendees() {
-            try {
-                allAttendees = await api.get(`/api/events/${eventId}/attendees`);
-                updateStats();
-                renderAttendees(allAttendees);
-                populateFilterOptions();
-            } catch (error) {
-                Utils.showToast('Failed to load attendees', 'error');
-                document.getElementById('attendeesTable').innerHTML = '<tr><td colspan="9" class="text-center">Failed to load attendees</td></tr>';
-            }
-        }
-
-        function updateStats() {
-            const total = allAttendees.length;
-            const checkedIn = allAttendees.filter(a => a.checked_in).length;
-            const qrPending = allAttendees.filter(a => !a.qr_generated).length;
-            const emailFailed = allAttendees.filter(a => a.email_error).length;
-
-            document.getElementById('totalAttendees').textContent = total;
-            document.getElementById('checkedIn').textContent = checkedIn;
-            document.getElementById('qrPending').textContent = qrPending;
-            document.getElementById('emailFailed').textContent = emailFailed;
-            document.getElementById('pendingCount').textContent = qrPending + emailFailed;
-        }
-
-        function renderAttendees(attendees) {
-            const tbody = document.getElementById('attendeesTable');
-            
-            if (attendees.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4">No attendees found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = attendees.map(a => `
-                <tr>
-                    <td>${a.name}</td>
-                    <td>${a.roll_number}</td>
-                    <td class="d-none d-md-table-cell">${a.branch}</td>
-                    <td class="d-none d-md-table-cell">${a.year}</td>
-                    <td class="d-none d-lg-table-cell">${a.section}</td>
-                    <td>${a.qr_generated ? '<i class="bi bi-check-circle-fill text-success"></i>' : '<i class="bi bi-x-circle-fill text-danger"></i>'}</td>
-                    <td>
-                        ${a.email_sent ? '<i class="bi bi-check-circle-fill text-success"></i>' : 
-                          a.email_error ? '<i class="bi bi-exclamation-triangle-fill text-danger"></i>' : 
-                          '<i class="bi bi-clock text-warning"></i>'}
-                    </td>
-                    <td>${a.checked_in ? '<span class="badge badge-success">✓</span>' : '<span class="badge badge-secondary">-</span>'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="resendQR(${a.id})" ${a.qr_generated && a.email_sent ? 'disabled' : ''}>
-                            <i class="bi bi-send"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function populateFilterOptions() {
-            const branches = [...new Set(allAttendees.map(a => a.branch))];
-            const sections = [...new Set(allAttendees.map(a => a.section))];
-            
-            document.getElementById('branchFilter').innerHTML = '<option value="">All Branches</option>' + 
-                branches.map(b => `<option value="${b}">${b}</option>`).join('');
-            
-            document.getElementById('sectionFilter').innerHTML = '<option value="">All Sections</option>' + 
-                sections.map(s => `<option value="${s}">${s}</option>`).join('');
-        }
-
-        function setupFilters() {
-            ['searchInput', 'branchFilter', 'yearFilter', 'sectionFilter', 'statusFilter'].forEach(id => {
-                document.getElementById(id).addEventListener('input', filterAttendees);
-            });
-        }
-
-        function filterAttendees() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const branch = document.getElementById('branchFilter').value;
-            const year = document.getElementById('yearFilter').value;
-            const section = document.getElementById('sectionFilter').value;
-            const status = document.getElementById('statusFilter').value;
-
-            const filtered = allAttendees.filter(a => {
-                const matchSearch = !search || a.name.toLowerCase().includes(search) || 
-                                   a.email.toLowerCase().includes(search) || 
-                                   a.roll_number.toLowerCase().includes(search);
-                const matchBranch = !branch || a.branch === branch;
-                const matchYear = !year || a.year == year;
-                const matchSection = !section || a.section === section;
-                const matchStatus = !status || 
-                                   (status === 'checked_in' && a.checked_in) || 
-                                   (status === 'not_checked_in' && !a.checked_in);
-                
-                return matchSearch && matchBranch && matchYear && matchSection && matchStatus;
-            });
-
-            renderAttendees(filtered);
-        }
-
-        function showUploadModal() {
-            uploadModalInstance.show();
-        }
-
-        async function downloadTemplate() {
-            try {
-                const response = await fetch(`${CONFIG.API_BASE_URL}/api/events/${eventId}/attendees/template`, {
-                    headers: { 'Authorization': `Bearer ${api.getToken()}` }
-                });
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'attendee_template.csv';
-                a.click();
-                Utils.showToast('Template downloaded', 'success');
-            } catch (error) {
-                Utils.showToast('Failed to download template', 'error');
-            }
-        }
-
-        async function uploadCSV() {
-            const fileInput = document.getElementById('csvFile');
-            if (!fileInput.files[0]) {
-                Utils.showToast('Please select a CSV file', 'warning');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-
-            document.getElementById('uploadProgress').style.display = 'block';
+            if (!currentEventId) return;
 
             try {
-                const result = await api.uploadFile(`/api/events/${eventId}/attendees/upload`, formData);
-                Utils.showToast(`Uploaded: ${result.added} added, ${result.skipped} skipped`, 'success');
-                uploadModalInstance.hide();
-                await loadAttendees();
+                const attendees = await api.get(`/api/events/${currentEventId}/attendees`);
+                const tbody = document.getElementById('attendeesTable');
+
+                if (attendees.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No attendees found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = attendees.map(attendee => `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer" onclick="showAttendeeDetails(${attendee.id})">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-slate-900 dark:text-white">${attendee.name}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${attendee.email}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${attendee.roll_number}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${attendee.checked_in ? 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300' : 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-300'}">
+                                ${attendee.checked_in ? 'Checked In' : 'Pending'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${attendee.checked_in ? Utils.formatTime(attendee.checkin_time) : '-'}
+                        </td>
+                    </tr>
+                `).join('');
             } catch (error) {
-                Utils.showToast(error.message || 'Upload failed', 'error');
-            } finally {
-                document.getElementById('uploadProgress').style.display = 'none';
-                fileInput.value = '';
+                console.error('Failed to load attendees:', error);
+                document.getElementById('attendeesTable').innerHTML = 
+                    '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Failed to load attendees</td></tr>';
             }
+        }
+
+        function editEvent() {
+            document.getElementById('editEventModal').classList.remove('hidden');
+            document.getElementById('editEventModal').classList.add('flex');
+            
+            // Populate form with current event data
+            if (eventData) {
+                document.getElementById('editEventName').value = eventData.name;
+                document.getElementById('editEventDescription').value = eventData.description || '';
+                document.getElementById('editEventDate').value = new Date(eventData.date).toISOString().slice(0, 16);
+                document.getElementById('editEventVenue').value = eventData.venue || '';
+            }
+        }
+
+        function hideEditEventModal() {
+            document.getElementById('editEventModal').classList.add('hidden');
+            document.getElementById('editEventModal').classList.remove('flex');
+        }
+
+        async function submitEditEvent(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const eventData = {
+                name: formData.get('eventName'),
+                description: formData.get('eventDescription'),
+                date: formData.get('eventDate'),
+                venue: formData.get('eventVenue')
+            };
+
+            try {
+                await api.put(`/api/events/${currentEventId}`, eventData);
+                Utils.showToast('Event updated successfully', 'success');
+                hideEditEventModal();
+                await loadEventData();
+            } catch (error) {
+                console.error('Failed to update event:', error);
+                Utils.showToast('Failed to update event', 'error');
+            }
+        }
+
+        async function deleteEvent() {
+            if (!currentEventId) return;
+
+            const confirmed = confirm(`Are you sure you want to delete "${eventData?.name}"? This action cannot be undone.`);
+            if (!confirmed) return;
+
+            try {
+                await api.delete(`/api/events/${currentEventId}`);
+                Utils.showToast('Event deleted successfully', 'success');
+                setTimeout(() => window.location.href = 'dashboard.html', 2000);
+            } catch (error) {
+                console.error('Failed to delete event:', error);
+                Utils.showToast('Failed to delete event', 'error');
+            }
+        }
+
+        function viewAttendees() {
+            // This would open a detailed attendees view
+            Utils.showToast('Detailed attendees view coming soon', 'info');
+        }
+
+        function checkinDashboard() {
+            window.location.href = `checkin-dashboard.html?event=${currentEventId}`;
         }
 
         async function generateQRCodes() {
-            const btn = document.getElementById('generateQrBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating...';
+            if (!currentEventId) return;
 
             try {
-                const result = await api.post(`/api/events/${eventId}/generate-qr`);
-                Utils.showToast(`QR Codes: ${result.success} sent, ${result.failed} failed`, result.failed > 0 ? 'warning' : 'success');
-                await loadAttendees();
+                await api.post(`/api/events/${currentEventId}/generate-qr`);
+                Utils.showToast('QR codes generated successfully', 'success');
             } catch (error) {
+                console.error('Failed to generate QR codes:', error);
                 Utils.showToast('Failed to generate QR codes', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-qr-code"></i> Generate QR Codes <span class="badge bg-light text-dark ms-1" id="pendingCount">0</span>';
             }
         }
 
-        async function resendQR(attendeeId) {
+        function exportData() {
+            if (!currentEventId) return;
+            Utils.showToast('Export functionality coming soon', 'info');
+        }
+
+        function refreshAttendees() {
+            loadAttendees();
+            loadEventStats();
+        }
+
+        // Attendee details functionality
+        let currentAttendeeId = null;
+
+        function showAttendeeDetails(attendeeId) {
+            currentAttendeeId = attendeeId;
+            loadAttendeeDetails(attendeeId);
+            document.getElementById('attendeeDetailsModal').classList.remove('hidden');
+        }
+
+        function hideAttendeeDetailsModal() {
+            document.getElementById('attendeeDetailsModal').classList.add('hidden');
+            currentAttendeeId = null;
+        }
+
+        async function loadAttendeeDetails(attendeeId) {
             try {
-                await api.post(`/api/attendees/${attendeeId}/resend-qr`);
-                Utils.showToast('QR code resent successfully', 'success');
-                await loadAttendees();
+                const attendee = await api.get(`/api/attendees/${attendeeId}`);
+                populateAttendeeDetails(attendee);
             } catch (error) {
+                console.error('Failed to load attendee details:', error);
+                Utils.showToast('Failed to load attendee details', 'error');
+            }
+        }
+
+        function populateAttendeeDetails(attendee) {
+            // Personal Information
+            document.getElementById('attendeeName').textContent = attendee.name || 'N/A';
+            document.getElementById('attendeeEmail').textContent = attendee.email || 'N/A';
+            document.getElementById('attendeeRollNumber').textContent = attendee.roll_number || 'N/A';
+            document.getElementById('attendeeBranch').textContent = attendee.branch || 'N/A';
+            document.getElementById('attendeeYear').textContent = attendee.year || 'N/A';
+            document.getElementById('attendeeSection').textContent = attendee.section || 'N/A';
+            document.getElementById('attendeePhone').textContent = attendee.phone || 'N/A';
+            document.getElementById('attendeeGender').textContent = attendee.gender || 'N/A';
+
+            // QR Code Status
+            const qrStatus = document.getElementById('qrGeneratedStatus');
+            if (attendee.qr_generated) {
+                qrStatus.textContent = 'Generated';
+                qrStatus.className = 'px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+                document.getElementById('qrGeneratedAtContainer').classList.remove('hidden');
+                document.getElementById('qrGeneratedAt').textContent = formatDateTime(attendee.qr_generated_at);
+            } else {
+                qrStatus.textContent = 'Not Generated';
+                qrStatus.className = 'px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+                document.getElementById('qrGeneratedAtContainer').classList.add('hidden');
+            }
+            document.getElementById('qrToken').textContent = attendee.qr_token || 'N/A';
+
+            // Email Status
+            const emailStatus = document.getElementById('emailSentStatus');
+            if (attendee.email_sent) {
+                emailStatus.textContent = 'Sent';
+                emailStatus.className = 'px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+                document.getElementById('emailSentAtContainer').classList.remove('hidden');
+                document.getElementById('emailSentAt').textContent = formatDateTime(attendee.email_sent_at);
+                document.getElementById('emailErrorContainer').classList.add('hidden');
+            } else {
+                emailStatus.textContent = 'Not Sent';
+                emailStatus.className = 'px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+                document.getElementById('emailSentAtContainer').classList.add('hidden');
+                
+                if (attendee.email_error) {
+                    document.getElementById('emailErrorContainer').classList.remove('hidden');
+                    document.getElementById('emailError').textContent = attendee.email_error;
+                } else {
+                    document.getElementById('emailErrorContainer').classList.add('hidden');
+                }
+            }
+
+            // Check-in Status
+            const checkinStatus = document.getElementById('checkedInStatus');
+            if (attendee.checked_in) {
+                checkinStatus.textContent = 'Checked In';
+                checkinStatus.className = 'px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+                document.getElementById('checkinTimeContainer').classList.remove('hidden');
+                document.getElementById('checkinTime').textContent = formatDateTime(attendee.checkin_time);
+            } else {
+                checkinStatus.textContent = 'Not Checked In';
+                checkinStatus.className = 'px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+                document.getElementById('checkinTimeContainer').classList.add('hidden');
+            }
+
+            // Timestamps
+            document.getElementById('createdAt').textContent = formatDateTime(attendee.created_at);
+            document.getElementById('updatedAt').textContent = formatDateTime(attendee.updated_at);
+        }
+
+        function formatDateTime(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        async function resendQRCode() {
+            if (!currentAttendeeId) return;
+
+            try {
+                await api.post(`/api/attendees/${currentAttendeeId}/resend-qr`);
+                Utils.showToast('QR code resent successfully', 'success');
+                
+                // Refresh attendee details
+                await loadAttendeeDetails(currentAttendeeId);
+            } catch (error) {
+                console.error('Failed to resend QR code:', error);
                 Utils.showToast('Failed to resend QR code', 'error');
             }
         }
 
-        async function exportCSV() {
+        async function sendEmailAgain() {
+            if (!currentAttendeeId) return;
+
             try {
-                const response = await fetch(`${CONFIG.API_BASE_URL}/api/events/${eventId}/export`, {
-                    headers: { 'Authorization': `Bearer ${api.getToken()}` }
-                });
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `event_${eventId}_attendees.csv`;
-                a.click();
-                Utils.showToast('CSV exported successfully', 'success');
+                // This would need a backend endpoint for resending emails
+                // For now, we'll use the resend QR endpoint which might also send email
+                await api.post(`/api/attendees/${currentAttendeeId}/resend-qr`);
+                Utils.showToast('Email sent successfully', 'success');
+                
+                // Refresh attendee details
+                await loadAttendeeDetails(currentAttendeeId);
             } catch (error) {
-                Utils.showToast('Failed to export CSV', 'error');
+                console.error('Failed to send email:', error);
+                Utils.showToast('Failed to send email', 'error');
+            }
+        }
+
+        function logout() {
+            Auth.logout();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('darkModeIcon').textContent = 'dark_mode';
+                document.getElementById('darkModeText').textContent = 'Dark Mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
             }
         }
     </script>
