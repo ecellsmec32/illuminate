@@ -209,6 +209,7 @@
                     <div>
                         <h1 class="text-lg font-semibold text-white">QR Scanner</h1>
                         <p class="text-sm text-white/80" id="eventName">Select an event</p>
+                        <p class="text-xs text-white/60" id="processedCount">No QR codes processed yet</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -244,6 +245,9 @@
                     </button>
                     <button onclick="manualCheckin()" class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
                         Manual Check-in
+                    </button>
+                    <button onclick="clearProcessedQRCodes()" class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
+                        Clear History
                     </button>
                     <button onclick="showQRViewer()" class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
                         View QR Codes
@@ -350,6 +354,7 @@
         let scanning = false;
         let scanInterval = null;
         let lastScanTime = 0;
+        let processedQRCodes = new Set(); // Track processed QR codes
         const SCAN_COOLDOWN = 1000; // 1 second cooldown between scans
 
         // Initialize scanner
@@ -412,6 +417,10 @@
             const eventName = document.getElementById('eventSelector').selectedOptions[0].textContent;
             document.getElementById('eventName').textContent = eventName;
             
+            // Clear processed QR codes for new event
+            processedQRCodes.clear();
+            updateProcessedCount();
+            
             // Generate QR codes for the event if they don't exist
             try {
                 await api.post(`/api/events/${eventId}/generate-qr`);
@@ -430,6 +439,9 @@
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());
                 }
+
+                // Reset scanning state
+                scanning = false;
 
                 stream = await navigator.mediaDevices.getUserMedia({
                     video: { 
@@ -497,6 +509,17 @@
                     stream.getTracks().forEach(track => track.stop());
                 }
 
+                // Check if this QR code was already processed in this session
+                if (processedQRCodes.has(qrData)) {
+                    console.log('QR code already processed in this session:', qrData);
+                    MessageDisplay.showResultModal('⚠️ This QR code has already been processed in this session.\n\nPlease use a different QR code or restart the scanner.');
+                    return;
+                }
+
+                // Add to processed QR codes set
+                processedQRCodes.add(qrData);
+                updateProcessedCount();
+
                 // Show loading state
                 MessageDisplay.showLoading('Validating QR code...');
 
@@ -531,6 +554,10 @@
                 
             } catch (error) {
                 console.error('QR scan failed:', error);
+                
+                // Remove from processed set if check-in failed
+                processedQRCodes.delete(qrData);
+                updateProcessedCount();
                 
                 // Handle error with enhanced message display
                 const errorMessage = MessageDisplay.handleApiError(error);
@@ -669,6 +696,29 @@
             setTimeout(() => {
                 handleQRCode(testQRData);
             }, 1000);
+        }
+
+        function clearProcessedQRCodes() {
+            const count = processedQRCodes.size;
+            processedQRCodes.clear();
+            updateProcessedCount();
+            
+            if (count > 0) {
+                Utils.showToast(`Cleared ${count} processed QR codes. You can now scan the same QR codes again.`, 'success');
+            } else {
+                Utils.showToast('No processed QR codes to clear.', 'info');
+            }
+        }
+
+        function updateProcessedCount() {
+            const count = processedQRCodes.size;
+            const countElement = document.getElementById('processedCount');
+            
+            if (count === 0) {
+                countElement.textContent = 'No QR codes processed yet';
+            } else {
+                countElement.textContent = `${count} QR code${count === 1 ? '' : 's'} processed`;
+            }
         }
 
         async function loadQRCodes() {
