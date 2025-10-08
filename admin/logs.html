@@ -1,203 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Logs - QrFlow</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../assets/css/qrflow.css" rel="stylesheet">
-    
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Activity Logs - QrFlow Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
     <style>
-        .log-item {
-            border-left: 4px solid var(--primary);
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            background: var(--card-bg);
-            border-radius: 0.5rem;
-            transition: var(--transition);
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
         }
-        
-        .log-item:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateX(4px);
-        }
-        
-        .log-action {
-            font-weight: 600;
-            color: var(--primary);
-        }
-        
-        .log-timestamp {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-        
-        .log-item.create { border-left-color: var(--secondary); }
-        .log-item.update { border-left-color: var(--accent); }
-        .log-item.delete { border-left-color: var(--danger); }
-        .log-item.login { border-left-color: var(--primary); }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="../assets/css/qrflow.css" rel="stylesheet"/>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="qrflow-navbar">
-        <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center">
-                <a href="dashboard.html" class="qrflow-logo">
-                    <div class="logo-icon"><i class="bi bi-qr-code"></i></div>
-                    <span>QrFlow</span>
-                    <span class="badge badge-danger ms-2">Admin</span>
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-background-light dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-slate-800 dark:text-white">
+                    QrFlow Admin
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    System Management
+                </p>
+            </div>
+            <nav class="flex-1 px-4 py-2">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="dashboard.html">
+                    <span class="material-symbols-outlined text-2xl"> dashboard </span>
+                    <span>Dashboard</span>
                 </a>
-                
-                <div class="d-flex gap-3">
-                    <a href="dashboard.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
-                    <a href="clubs.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-building"></i> Clubs
-                    </a>
-                    <a href="users.html" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-people"></i> Users
-                    </a>
-                    <a href="logs.html" class="btn btn-sm btn-primary">
-                        <i class="bi bi-clock-history"></i> Logs
-                    </a>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="clubs.html">
+                    <span class="material-symbols-outlined text-2xl"> business </span>
+                    <span>Clubs</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="users.html">
+                    <span class="material-symbols-outlined text-2xl"> group </span>
+                    <span>Users</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary font-semibold" href="#">
+                    <span class="material-symbols-outlined text-2xl"> history </span>
+                    <span>Logs</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="club-admin.html">
+                    <span class="material-symbols-outlined text-2xl"> admin_panel_settings </span>
+                    <span>Club Admin</span>
+                </a>
+            </nav>
+            <div class="p-4">
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-2xl" id="darkModeIcon"> dark_mode </span>
+                    <span id="darkModeText">Dark Mode</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" href="#" onclick="logout()">
+                    <span class="material-symbols-outlined text-2xl"> logout </span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <header class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">
+                            Activity Logs
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400">
+                            Monitor system activities and user actions
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="flex items-center justify-center rounded-lg h-10 px-6 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-white text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700" onclick="refreshLogs()">
+                            <span class="material-symbols-outlined text-lg mr-2"> refresh </span>
+                            Refresh
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#" onclick="Auth.logout(); return false;">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </a></li>
-                        </ul>
+                        <button class="flex items-center justify-center rounded-lg h-10 px-6 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-white text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700" onclick="exportLogs()">
+                            <span class="material-symbols-outlined text-lg mr-2"> download </span>
+                            Export
+                        </button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </nav>
+            </header>
 
-    <!-- Main Content -->
-    <div class="container-fluid mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>
-                <i class="bi bi-clock-history"></i>
-                Activity Logs
-            </h2>
-            <button class="btn btn-outline-primary" onclick="loadLogs()">
-                <i class="bi bi-arrow-clockwise"></i>
-                Refresh
-            </button>
-        </div>
+            <!-- Filters -->
+            <div class="mb-6">
+                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Action Type</label>
+                            <select id="actionFilter" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                                <option value="">All Actions</option>
+                                <option value="create">Create</option>
+                                <option value="update">Update</option>
+                                <option value="delete">Delete</option>
+                                <option value="login">Login</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">User</label>
+                            <select id="userFilter" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                                <option value="">All Users</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Date From</label>
+                            <input type="date" id="dateFrom" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Date To</label>
+                            <input type="date" id="dateTo" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                        </div>
+                    </div>
+                    <div class="mt-4 flex gap-3">
+                        <button onclick="applyFilters()" class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90">
+                            <span class="material-symbols-outlined text-lg mr-2"> filter_list </span>
+                            Apply Filters
+                        </button>
+                        <button onclick="clearFilters()" class="flex items-center justify-center rounded-lg h-10 px-6 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-white text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700">
+                            <span class="material-symbols-outlined text-lg mr-2"> clear </span>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Filters -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <select class="form-select" id="actionFilter">
-                            <option value="">All Actions</option>
-                            <option value="login">Login</option>
-                            <option value="create">Create</option>
-                            <option value="update">Update</option>
-                            <option value="delete">Delete</option>
-                            <option value="upload">Upload</option>
-                            <option value="checkin">Check-in</option>
-                            <option value="export">Export</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" id="entityFilter">
-                            <option value="">All Entities</option>
-                            <option value="club">Club</option>
-                            <option value="user">User</option>
-                            <option value="event">Event</option>
-                            <option value="attendee">Attendee</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" id="userFilter">
-                            <option value="">All Users</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" id="limitFilter" onchange="loadLogs()">
-                            <option value="50">Last 50</option>
-                            <option value="100">Last 100</option>
-                            <option value="200">Last 200</option>
-                            <option value="500">Last 500</option>
-                        </select>
-                    </div>
+            <!-- Logs Table -->
+            <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-lg">
+                <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+                        System Activity Logs
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800">
+                            <tr>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    User
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Action
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Entity
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Description
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Timestamp
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    IP Address
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="logsTable">
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+                                    <div class="flex items-center justify-center">
+                                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                        <span class="ml-2">Loading logs...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        <!-- Stats -->
-        <div class="row mb-4">
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-primary" id="totalLogs">0</div>
-                        <div class="stat-card-label">Total Logs</div>
-                    </div>
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-slate-500 dark:text-slate-400">
+                    Showing <span id="showingFrom">0</span> to <span id="showingTo">0</span> of <span id="totalLogs">0</span> logs
+                </div>
+                <div class="flex gap-2">
+                    <button id="prevPage" onclick="changePage(-1)" class="px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Previous
+                    </button>
+                    <span id="currentPage" class="px-3 py-2 text-sm text-slate-700 dark:text-slate-300">1</span>
+                    <button id="nextPage" onclick="changePage(1)" class="px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Next
+                    </button>
                 </div>
             </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-success" id="todayLogs">0</div>
-                        <div class="stat-card-label">Today's Activity</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-info" id="uniqueUsers">0</div>
-                        <div class="stat-card-label">Active Users</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="card stat-card">
-                    <div class="card-body text-center">
-                        <div class="stat-card-value text-warning" id="recentActions">0</div>
-                        <div class="stat-card-label">Last Hour</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Logs List -->
-        <div class="card">
-            <div class="card-body">
-                <div id="loadingState" class="text-center py-4">
-                    <div class="spinner-border text-primary"></div>
-                    <p class="mt-2 mb-0">Loading activity logs...</p>
-                </div>
-
-                <div id="logsContainer" style="display: none;">
-                    <!-- Logs will be inserted here -->
-                </div>
-
-                <div id="emptyState" class="text-center py-5" style="display: none;">
-                    <i class="bi bi-inbox display-1 text-muted"></i>
-                    <h4 class="mt-3 mb-2">No Activity Logs</h4>
-                    <p class="text-muted">No logs match the selected filters</p>
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
     
     <script>
+        // Check authentication
         Auth.requireAuth();
         const user = Auth.getCurrentUser();
         
@@ -206,22 +231,28 @@
             setTimeout(() => window.location.href = '../organizer/dashboard.html', 2000);
         }
 
+        let currentPage = 1;
+        const logsPerPage = 20;
+        let totalLogs = 0;
         let allLogs = [];
-        let users = [];
 
+        // Load logs data
         document.addEventListener('DOMContentLoaded', async () => {
+            initDarkMode();
             await loadUsers();
             await loadLogs();
-            setupFilters();
         });
 
         async function loadUsers() {
             try {
-                users = await api.get('/api/admin/users');
+                const users = await api.get('/api/admin/users');
+                const userSelect = document.getElementById('userFilter');
                 
-                const userFilter = document.getElementById('userFilter');
                 users.forEach(user => {
-                    userFilter.innerHTML += `<option value="${user.id}">${user.username}</option>`;
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.full_name || user.username;
+                    userSelect.appendChild(option);
                 });
             } catch (error) {
                 console.error('Failed to load users:', error);
@@ -229,163 +260,198 @@
         }
 
         async function loadLogs() {
-            const limit = document.getElementById('limitFilter').value;
-            
-            document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('logsContainer').style.display = 'none';
-            document.getElementById('emptyState').style.display = 'none';
-
             try {
-                allLogs = await api.get(`/api/admin/logs?skip=0&limit=${limit}`);
-                updateStats();
-                filterAndRenderLogs();
+                const skip = (currentPage - 1) * logsPerPage;
+                const logs = await api.get(`/api/admin/logs?skip=${skip}&limit=${logsPerPage}`);
+                allLogs = logs; // Store all logs for filtering
+                const tbody = document.getElementById('logsTable');
+
+                if (logs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No logs found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = logs.map(log => {
+                    const actionColor = getActionColor(log.action_type);
+                    return `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-slate-900 dark:text-white">${log.user_name || 'Unknown'}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${actionColor}">
+                                    ${log.action_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                ${log.entity_type || '-'}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
+                                ${log.description}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                ${Utils.formatTime(log.timestamp)}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                ${log.ip_address || '-'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Update pagination info
+                document.getElementById('showingFrom').textContent = skip + 1;
+                document.getElementById('showingTo').textContent = skip + logs.length;
+                document.getElementById('totalLogs').textContent = totalLogs || logs.length;
+                document.getElementById('currentPage').textContent = currentPage;
+
+                // Update pagination buttons
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = logs.length < logsPerPage;
+
             } catch (error) {
                 console.error('Failed to load logs:', error);
-                Utils.showToast('Failed to load logs', 'error');
-                document.getElementById('loadingState').innerHTML = 
-                    '<p class="text-center text-danger">Failed to load logs</p>';
+                document.getElementById('logsTable').innerHTML = 
+                    '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Failed to load logs</td></tr>';
             }
         }
 
-        function updateStats() {
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const oneHourAgo = new Date(now - 60 * 60 * 1000);
-
-            const todayLogs = allLogs.filter(log => new Date(log.timestamp) >= today);
-            const recentLogs = allLogs.filter(log => new Date(log.timestamp) >= oneHourAgo);
-            const uniqueUsers = new Set(allLogs.map(log => log.user_id)).size;
-
-            document.getElementById('totalLogs').textContent = allLogs.length;
-            document.getElementById('todayLogs').textContent = todayLogs.length;
-            document.getElementById('uniqueUsers').textContent = uniqueUsers;
-            document.getElementById('recentActions').textContent = recentLogs.length;
+        function getActionColor(actionType) {
+            if (actionType.includes('create')) return 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300';
+            if (actionType.includes('update')) return 'text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-300';
+            if (actionType.includes('delete')) return 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-300';
+            if (actionType.includes('login')) return 'text-purple-600 bg-purple-100 dark:bg-purple-900 dark:text-purple-300';
+            return 'text-slate-600 bg-slate-100 dark:bg-slate-700 dark:text-slate-400';
         }
 
-        function setupFilters() {
-            ['actionFilter', 'entityFilter', 'userFilter'].forEach(id => {
-                document.getElementById(id).addEventListener('change', filterAndRenderLogs);
-            });
+        async function refreshLogs() {
+            await loadLogs();
+            Utils.showToast('Logs refreshed', 'success');
         }
 
-        function filterAndRenderLogs() {
+        function exportLogs() {
+            Utils.showToast('Export functionality coming soon', 'info');
+        }
+
+        function applyFilters() {
             const actionFilter = document.getElementById('actionFilter').value;
-            const entityFilter = document.getElementById('entityFilter').value;
             const userFilter = document.getElementById('userFilter').value;
-
-            let filtered = allLogs;
-
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            
+            // Apply filters to current logs
+            let filteredLogs = [...allLogs];
+            
             if (actionFilter) {
-                filtered = filtered.filter(log => log.action === actionFilter);
+                filteredLogs = filteredLogs.filter(log => 
+                    log.action_type.toLowerCase().includes(actionFilter.toLowerCase())
+                );
             }
-
-            if (entityFilter) {
-                filtered = filtered.filter(log => log.entity_type === entityFilter);
-            }
-
+            
             if (userFilter) {
-                filtered = filtered.filter(log => log.user_id == userFilter);
+                filteredLogs = filteredLogs.filter(log => 
+                    log.user_id.toString() === userFilter
+                );
             }
-
-            renderLogs(filtered);
+            
+            if (dateFrom) {
+                const fromDate = new Date(dateFrom);
+                filteredLogs = filteredLogs.filter(log => 
+                    new Date(log.timestamp) >= fromDate
+                );
+            }
+            
+            if (dateTo) {
+                const toDate = new Date(dateTo);
+                toDate.setHours(23, 59, 59, 999); // End of day
+                filteredLogs = filteredLogs.filter(log => 
+                    new Date(log.timestamp) <= toDate
+                );
+            }
+            
+            renderFilteredLogs(filteredLogs);
         }
 
-        function renderLogs(logs) {
-            document.getElementById('loadingState').style.display = 'none';
+        function renderFilteredLogs(logs) {
+            const tbody = document.getElementById('logsTable');
             
-            const container = document.getElementById('logsContainer');
-            const emptyState = document.getElementById('emptyState');
-
             if (logs.length === 0) {
-                container.style.display = 'none';
-                emptyState.style.display = 'block';
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">No logs found matching your filters</td></tr>';
                 return;
             }
 
-            container.style.display = 'block';
-            emptyState.style.display = 'none';
-
-            container.innerHTML = logs.map(log => {
-                const icon = getActionIcon(log.action);
-                const actionClass = log.action;
-                
-                // Get user name properly
-                let userName = 'System';
-                if (log.user_name) {
-                    userName = log.user_name;
-                } else if (log.user_id) {
-                    const logUser = users.find(u => u.id === log.user_id);
-                    userName = logUser ? logUser.username : 'User #' + log.user_id;
-                }
-                
+            tbody.innerHTML = logs.map(log => {
+                const actionColor = getActionColor(log.action_type);
                 return `
-                    <div class="log-item ${actionClass}">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="d-flex align-items-center gap-2 mb-1">
-                                    <i class="bi ${icon}"></i>
-                                    <span class="log-action">${userName}</span>
-                                    <span class="badge badge-${getActionBadgeClass(log.action)}">${log.action}</span>
-                                    ${log.entity_type ? `<span class="badge badge-secondary">${log.entity_type}</span>` : ''}
-                                </div>
-                                <div class="text-muted">${log.description}</div>
-                                ${log.details && Object.keys(log.details).length > 0 ? `
-                                    <small class="text-muted d-block mt-1">
-                                        <i class="bi bi-info-circle"></i>
-                                        ${formatLogDetails(log.details)}
-                                    </small>
-                                ` : ''}
-                            </div>
-                            <div class="text-end ms-3">
-                                <div class="log-timestamp">${Utils.formatDate(log.timestamp)}</div>
-                            </div>
-                        </div>
-                    </div>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">
+                            ${log.user_name || 'Unknown'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${actionColor}">
+                                ${log.action_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${log.entity_type || '-'}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
+                            ${log.description}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${Utils.formatTime(log.timestamp)}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            ${log.ip_address || '-'}
+                        </td>
+                    </tr>
                 `;
             }).join('');
         }
 
-        function formatLogDetails(details) {
-            if (!details) return '';
-            
-            // Format details object into readable string
-            const keys = Object.keys(details);
-            if (keys.length === 0) return '';
-            
-            return keys.map(key => {
-                const value = details[key];
-                if (value && typeof value === 'object') {
-                    return `${key}: ${JSON.stringify(value)}`;
-                }
-                return `${key}: ${value}`;
-            }).join(', ');
+        function clearFilters() {
+            document.getElementById('actionFilter').value = '';
+            document.getElementById('userFilter').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
         }
 
-
-        function getActionIcon(action) {
-            const icons = {
-                login: 'bi-box-arrow-in-right',
-                create: 'bi-plus-circle',
-                update: 'bi-pencil-square',
-                delete: 'bi-trash',
-                upload: 'bi-upload',
-                checkin: 'bi-check-circle',
-                export: 'bi-download'
-            };
-            return icons[action] || 'bi-circle';
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage >= 1) {
+                currentPage = newPage;
+                loadLogs();
+            }
         }
 
-        function getActionBadgeClass(action) {
-            const classes = {
-                login: 'primary',
-                create: 'success',
-                update: 'warning',
-                delete: 'danger',
-                upload: 'info',
-                checkin: 'success',
-                export: 'secondary'
-            };
-            return classes[action] || 'secondary';
+        function logout() {
+            Auth.logout();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('darkModeIcon').textContent = 'dark_mode';
+                document.getElementById('darkModeText').textContent = 'Dark Mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').textContent = 'light_mode';
+                document.getElementById('darkModeText').textContent = 'Light Mode';
+            }
         }
     </script>
 </body>
