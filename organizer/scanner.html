@@ -332,6 +332,7 @@
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/message-display.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     
     <script>
@@ -496,29 +497,44 @@
                     stream.getTracks().forEach(track => track.stop());
                 }
 
-                // Process QR code
-                const result = await api.post('/api/checkin/scan', { qr_token: qrData });
+                // Show loading state
+                MessageDisplay.showLoading('Validating QR code...');
+
+                // Optional: Pre-validate QR token
+                try {
+                    const validateResponse = await api.validateQRToken(qrData);
+                    
+                    if (!validateResponse.success) {
+                        MessageDisplay.showResultModal(validateResponse.message);
+                        return;
+                    }
+
+                    // If already checked in, show info message
+                    if (validateResponse.already_checked_in) {
+                        MessageDisplay.showResultModal(validateResponse.message);
+                        return;
+                    }
+
+                    // Update loading message
+                    MessageDisplay.showLoading('Processing check-in...');
+
+                } catch (validateError) {
+                    console.log('Pre-validation failed, proceeding with direct check-in:', validateError);
+                    // Continue with direct check-in if validation fails
+                }
+
+                // Process QR code for check-in
+                const result = await api.scanQRCheckin(qrData);
                 
-                // Show success result
-                const attendeeName = result.attendee_name || result.name || 'Attendee';
-                showResult('success', 'Check-in Successful', `${attendeeName} has been checked in successfully`);
+                // Show result using enhanced message display
+                MessageDisplay.showResultModal(result.message);
                 
             } catch (error) {
                 console.error('QR scan failed:', error);
                 
-                // Show error result
-                let errorMessage = 'Failed to process QR code';
-                if (error.message.includes('already checked in')) {
-                    errorMessage = 'Attendee already checked in';
-                } else if (error.message.includes('not found')) {
-                    errorMessage = 'Invalid QR code or attendee not found';
-                } else if (error.message.includes('duplicate')) {
-                    errorMessage = 'Duplicate pass detected - verification required';
-                    showDuplicateVerification(result);
-                    return;
-                }
-                
-                showResult('error', 'Check-in Failed', errorMessage);
+                // Handle error with enhanced message display
+                const errorMessage = MessageDisplay.handleApiError(error);
+                MessageDisplay.showResultModal(errorMessage);
             }
         }
 
@@ -557,7 +573,7 @@
         }
 
         function closeResultModal() {
-            document.getElementById('resultModal').style.display = 'none';
+            MessageDisplay.hideResultModal();
             // Restart scanning
             setTimeout(() => {
                 startCamera();
@@ -599,20 +615,24 @@
                 }
 
                 // Perform manual check-in
-                await api.post(`/api/attendees/${attendee.id}/checkin-manual`);
+                const result = await api.manualCheckin(attendee.id);
                 
                 hideManualModal();
-                showResult('success', 'Check-in Successful', `${attendee.name} has been checked in successfully`);
+                
+                // Show result using enhanced message display
+                if (result.message) {
+                    MessageDisplay.showResultModal(result.message);
+                } else {
+                    MessageDisplay.showResultModal(`✅ Manual check-in successful!\n\n👤 Name: ${attendee.name}\n🎓 Roll Number: ${attendee.roll_number}`);
+                }
                 
             } catch (error) {
                 console.error('Manual check-in failed:', error);
-                let errorMessage = 'Failed to check in attendee';
-                if (error.message.includes('already checked in')) {
-                    errorMessage = 'Attendee is already checked in';
-                } else if (error.message.includes('not found')) {
-                    errorMessage = 'Attendee not found for this event';
-                }
-                Utils.showToast(errorMessage, 'error');
+                
+                // Handle error with enhanced message display
+                const errorMessage = MessageDisplay.handleApiError(error);
+                hideManualModal();
+                MessageDisplay.showResultModal(errorMessage);
             }
         }
 
@@ -733,13 +753,20 @@
             }
 
             try {
-                await api.post(`/api/attendees/${selectedPass.value}/checkin-manual`);
+                const result = await api.manualCheckin(selectedPass.value);
                 closeDuplicateModal();
                 hideManualModal();
-                showResult('success', 'Check-in Successful', 'Attendee has been checked in successfully');
+                
+                // Show result using enhanced message display
+                if (result.message) {
+                    MessageDisplay.showResultModal(result.message);
+                } else {
+                    MessageDisplay.showResultModal('✅ Check-in Successful\n\nAttendee has been checked in successfully');
+                }
             } catch (error) {
                 console.error('Duplicate pass verification failed:', error);
-                Utils.showToast('Failed to check in attendee', 'error');
+                const errorMessage = MessageDisplay.handleApiError(error);
+                MessageDisplay.showResultModal(errorMessage);
             }
         }
 

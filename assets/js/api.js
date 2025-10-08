@@ -380,6 +380,13 @@ class ApiService {
         return this.post(`/api/attendees/${attendeeId}/checkin-manual`);
     }
 
+    /**
+     * Validate QR token and get attendee information
+     */
+    async validateQRToken(qrToken) {
+        return this.post('/api/checkin/validate', { qr_token: qrToken });
+    }
+
     // ============= Dashboard API Methods =============
     
     /**

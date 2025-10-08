@@ -247,6 +247,7 @@
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/message-display.js"></script>
     
     <script>
         // Check authentication
@@ -396,8 +397,14 @@
                 }
 
                 // Perform manual check-in
-                await api.post(`/api/attendees/${attendee.id}/checkin-manual`);
-                Utils.showToast(`${attendee.name} checked in successfully`, 'success');
+                const result = await api.manualCheckin(attendee.id);
+                
+                // Show enhanced success message
+                if (result.message) {
+                    Utils.showToast(result.message, 'success');
+                } else {
+                    Utils.showToast(`✅ ${attendee.name} checked in successfully`, 'success');
+                }
                 
                 // Clear input and refresh data
                 document.getElementById('manualCheckinInput').value = '';
@@ -405,7 +412,18 @@
                 await loadRecentCheckins();
             } catch (error) {
                 console.error('Failed to perform manual check-in:', error);
-                Utils.showToast('Failed to check in attendee', 'error');
+                
+                // Handle error with enhanced message
+                let errorMessage = 'Failed to check in attendee';
+                if (error.message.includes('already checked in')) {
+                    errorMessage = '✅ Attendee is already checked in';
+                } else if (error.message.includes('not found')) {
+                    errorMessage = '❌ Attendee not found for this event';
+                } else if (error.detail) {
+                    errorMessage = error.detail;
+                }
+                
+                Utils.showToast(errorMessage, 'error');
             }
         }
 
