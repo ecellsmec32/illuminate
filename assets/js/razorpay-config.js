@@ -13,7 +13,7 @@ const RAZORPAY_CONFIG = {
     
     // Workshop Details
     WORKSHOP: {
-        NAME: 'Illuminate 2024',
+        NAME: 'Illuminate 2025',
         AMOUNT: 65000, // Amount in paise (₹650)
         CURRENCY: 'INR',
         DESCRIPTION: 'E-Cell SMEC Illuminate Entrepreneurship Workshop',
@@ -57,7 +57,7 @@ function initializeRazorpayPayment(options = {}) {
             contact: options.customer_phone || ''
         },
         notes: {
-            workshop: 'Illuminate 2024',
+            workshop: 'Illuminate 2025',
             organizer: 'E-Cell SMEC'
         },
         theme: RAZORPAY_CONFIG.PAYMENT_OPTIONS.THEME,
